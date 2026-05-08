@@ -1,1536 +1,937 @@
-<link rel="manifest" href="/manifest.json">
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js');
-  }
-</script>
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>دليل Red Hat — بالدارجة</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Kufi+Arabic:wght@400;600;700;900&display=swap');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RedHat Darija Guide</title>
+  <link rel="manifest" href="/manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js');
+    }
+  </script>
+  <style>
+    :root {
+      --red: #cc0000;
+      --red-dark: #990000;
+      --red-light: #ff2222;
+      --bg: #0f0f0f;
+      --bg2: #1a1a1a;
+      --bg3: #242424;
+      --text: #f0f0f0;
+      --text2: #aaaaaa;
+      --green: #00ff88;
+      --yellow: #ffd700;
+      --blue: #4a9eff;
+      --border: #2a2a2a;
+    }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-:root {
-  --bg:      #0d1117;
-  --bg1:     #161b22;
-  --bg2:     #1c2128;
-  --bg3:     #222932;
-  --bg4:     #2d333b;
-  --border:  #30363d;
-  --border2: #444c56;
-  --text:    #cdd9e5;
-  --text2:   #768390;
-  --text3:   #444c56;
-  --green:   #3fb950;
-  --green2:  #238636;
-  --green3:  #0a3622;
-  --blue:    #58a6ff;
-  --blue2:   #1f3a5f;
-  --amber:   #e3b341;
-  --amber2:  #3a2d00;
-  --red:     #f85149;
-  --red2:    #3a0a0a;
-  --purple:  #bc8cff;
-  --purple2: #2a1840;
-  --cyan:    #39d4c9;
-  --cyan2:   #0a2e2d;
-  --orange:  #f0883e;
-  --orange2: #3a1500;
-  --mono: 'JetBrains Mono', monospace;
-  --sans: 'Noto Kufi Arabic', sans-serif;
-}
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Tajawal', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--sans);
-  min-height: 100vh;
-  direction: rtl;
-  font-size: 14px;
-  line-height: 1.5;
-}
+    /* HEADER */
+    .header {
+      background: linear-gradient(135deg, #1a0000 0%, #2d0000 50%, #1a0000 100%);
+      border-bottom: 2px solid var(--red);
+      padding: 16px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 4px 20px rgba(204,0,0,0.3);
+    }
 
-/* ── HEADER ────────────────────────────────── */
-.header {
-  background: var(--bg1);
-  border-bottom: 1px solid var(--border);
-  padding: 0 1.5rem;
-  height: 58px;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  position: sticky;
-  top: 0;
-  z-index: 200;
-  backdrop-filter: blur(8px);
-}
+    .logo {
+      width: 46px;
+      height: 46px;
+      flex-shrink: 0;
+    }
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-}
-.brand-badge {
-  background: var(--red);
-  color: #fff;
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 700;
-  padding: 4px 9px;
-  border-radius: 6px;
-  letter-spacing: .04em;
-}
-.brand-title { font-size: 16px; font-weight: 700; color: var(--text); line-height: 1.2; }
-.brand-sub { font-size: 11px; color: var(--text2); }
+    .header-text h1 {
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.1;
+    }
 
-.search-box {
-  flex: 1;
-  max-width: 380px;
-  margin-right: auto;
-  position: relative;
-}
-.search-box input {
-  width: 100%;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 7px 36px 7px 12px;
-  color: var(--text);
-  font-family: var(--sans);
-  font-size: 13px;
-  outline: none;
-  transition: border-color .2s, box-shadow .2s;
-  direction: rtl;
-}
-.search-box input:focus {
-  border-color: var(--green);
-  box-shadow: 0 0 0 3px rgba(63,185,80,.12);
-}
-.search-box input::placeholder { color: var(--text3); }
-.search-icon {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text3);
-  font-size: 15px;
-  pointer-events: none;
-}
+    .header-text span {
+      font-size: 0.75rem;
+      color: var(--red-light);
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 1px;
+    }
 
-.header-stats {
-  display: flex;
-  gap: 18px;
-  flex-shrink: 0;
-}
-.hstat { text-align: center; }
-.hstat-n {
-  font-family: var(--mono);
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--green);
-  line-height: 1;
-  display: block;
-}
-.hstat-l { font-size: 10px; color: var(--text2); margin-top: 1px; display: block; }
+    /* SEARCH */
+    .search-wrap {
+      padding: 14px 16px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+    }
 
-/* ── TABS ────────────────────────────────── */
-.tabs-bar {
-  background: var(--bg1);
-  border-bottom: 1px solid var(--border);
-  padding: 0 1.5rem;
-  overflow-x: auto;
-  white-space: nowrap;
-  display: flex;
-  gap: 4px;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.tabs-bar::-webkit-scrollbar { display: none; }
+    .search-box {
+      width: 100%;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px 12px 42px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+      position: relative;
+    }
 
-.tab-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 10px 14px;
-  border: none;
-  background: transparent;
-  color: var(--text2);
-  font-family: var(--sans);
-  font-size: 12.5px;
-  font-weight: 600;
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  transition: color .15s, border-color .15s;
-  white-space: nowrap;
-  position: relative;
-  top: 1px;
-}
-.tab-btn:hover { color: var(--text); }
-.tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
-.tab-count {
-  background: var(--bg3);
-  border-radius: 10px;
-  padding: 1px 6px;
-  font-size: 10px;
-  font-family: var(--mono);
-}
-.tab-btn.active .tab-count { background: var(--green3); color: var(--green); }
+    .search-box:focus {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(204,0,0,0.15);
+    }
 
-/* ── LAYOUT ────────────────────────────────── */
-.page { display: flex; min-height: calc(100vh - 97px); }
+    .search-wrap {
+      position: relative;
+    }
 
-.sidebar {
-  width: 220px;
-  flex-shrink: 0;
-  background: var(--bg1);
-  border-left: 1px solid var(--border);
-  padding: 1rem 0;
-  position: sticky;
-  top: 97px;
-  height: calc(100vh - 97px);
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
-}
+    .search-icon {
+      position: absolute;
+      left: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text2);
+      font-size: 1rem;
+      pointer-events: none;
+    }
 
-.sidebar-section { margin-bottom: 1.5rem; }
-.sidebar-label {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--text3);
-  letter-spacing: .08em;
-  padding: 0 1rem;
-  margin-bottom: .4rem;
-  text-transform: uppercase;
-}
-.sidebar-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 1rem;
-  font-size: 12.5px;
-  color: var(--text2);
-  cursor: pointer;
-  transition: background .12s, color .12s;
-  border-right: 2px solid transparent;
-}
-.sidebar-item:hover { background: var(--bg2); color: var(--text); }
-.sidebar-item.active { color: var(--green); border-right-color: var(--green); background: var(--green3); }
-.sidebar-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    /* CATEGORIES */
+    .categories {
+      display: flex;
+      gap: 8px;
+      padding: 14px 16px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+    }
 
-.content-area { flex: 1; padding: 1.5rem; overflow: hidden; }
+    .categories::-webkit-scrollbar { display: none; }
 
-/* ── COMBO CARDS ────────────────────────────────── */
-.combos-section { margin-bottom: 2rem; }
-.combos-title {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--amber);
-  letter-spacing: .07em;
-  margin-bottom: .75rem;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.combos-title::before { content: ''; flex: 1; height: 1px; background: var(--border); order: 1; }
-.combos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 8px; }
-.combo-card {
-  background: var(--amber2);
-  border: 1px solid rgba(227,179,65,.25);
-  border-radius: 10px;
-  padding: 12px 14px;
-}
-.combo-card-title { font-size: 12px; font-weight: 700; color: var(--amber); margin-bottom: 8px; }
-.combo-code { font-family: var(--mono); font-size: 11.5px; direction: ltr; text-align: left; line-height: 1.8; overflow-x: auto; }
-.combo-cmd { color: #85e89d; }
-.combo-cmt { color: var(--text3); }
-.combo-prompt { color: var(--text3); margin-left: 4px; }
+    .cat-btn {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      padding: 7px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-family: 'Tajawal', sans-serif;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
 
-/* ── SECTION ────────────────────────────────── */
-.section { margin-bottom: 2rem; }
-.section-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: .75rem;
-  padding-bottom: .5rem;
-  border-bottom: 1px solid var(--border);
-}
-.section-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.section-title { font-size: 12px; font-weight: 700; color: var(--text2); letter-spacing: .04em; }
-.section-count { font-size: 11px; color: var(--text3); font-family: var(--mono); margin-right: auto; }
+    .cat-btn.active, .cat-btn:hover {
+      background: var(--red);
+      border-color: var(--red);
+      color: #fff;
+    }
 
-.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 8px; }
+    /* STATS BAR */
+    .stats-bar {
+      padding: 10px 16px;
+      font-size: 0.75rem;
+      color: var(--text2);
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
 
-/* ── CARD ────────────────────────────────── */
-.cmd-card {
-  background: var(--bg1);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: border-color .15s, box-shadow .15s;
-  animation: fadeIn .2s ease;
-}
-@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-.cmd-card:hover { border-color: var(--border2); }
-.cmd-card.open { border-color: var(--green2); box-shadow: 0 0 0 1px var(--green2); }
+    .stats-bar span { color: var(--green); }
 
-.card-head {
-  padding: 12px 14px;
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-}
-.card-icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 7px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  flex-shrink: 0;
-}
-.card-texts { flex: 1; min-width: 0; }
-.card-name {
-  font-family: var(--mono);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--green);
-  direction: ltr;
-  text-align: left;
-  display: block;
-  margin-bottom: 3px;
-}
-.card-ar { font-size: 13px; font-weight: 700; color: var(--text); display: block; margin-bottom: 2px; }
-.card-short { font-size: 12px; color: var(--text2); display: block; line-height: 1.4; }
-.card-chevron {
-  color: var(--text3);
-  font-size: 16px;
-  flex-shrink: 0;
-  margin-top: 8px;
-  transition: transform .2s;
-  user-select: none;
-}
-.cmd-card.open .card-chevron { transform: rotate(180deg); color: var(--green); }
+    /* COMMAND LIST */
+    .command-list {
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
 
-.card-body {
-  display: none;
-  border-top: 1px solid var(--border);
-  padding: 14px;
-  animation: slideDown .15s ease;
-}
-@keyframes slideDown { from { opacity: 0; } to { opacity: 1; } }
-.cmd-card.open .card-body { display: block; }
+    .section-title {
+      font-size: 0.7rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--red);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 16px 0 6px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 4px;
+    }
 
-.card-desc {
-  font-size: 12.5px;
-  color: var(--text2);
-  line-height: 1.7;
-  margin-bottom: 12px;
-  padding: 8px 12px;
-  background: var(--bg2);
-  border-radius: 6px;
-  border-right: 3px solid var(--blue);
-}
+    /* COMMAND CARD */
+    .cmd-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.2s;
+    }
 
-.ex-label {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--text3);
-  letter-spacing: .07em;
-  margin-bottom: 6px;
-  text-transform: uppercase;
-}
+    .cmd-card:hover {
+      border-color: rgba(204,0,0,0.4);
+    }
 
-.ex-block {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px 14px;
-  font-family: var(--mono);
-  font-size: 11.5px;
-  direction: ltr;
-  text-align: left;
-  overflow-x: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
-}
+    .cmd-card.open {
+      border-color: var(--red);
+      box-shadow: 0 0 16px rgba(204,0,0,0.15);
+    }
 
-.ex-row {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 6px;
-  align-items: baseline;
-  padding: 2px 0;
-}
-.ex-row:hover { background: rgba(255,255,255,.02); border-radius: 4px; }
-.ex-p { color: var(--text3); user-select: none; }
-.ex-c { color: #85e89d; white-space: pre; }
-.ex-comment { color: var(--text3); font-size: 10.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cmd-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-.flags-row { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 5px; }
-.flag-chip {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 2px 8px;
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--purple);
-  direction: ltr;
-  display: inline-block;
-}
+    .cmd-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
 
-.tip-box {
-  margin-top: 10px;
-  background: var(--amber2);
-  border: 1px solid rgba(227,179,65,.3);
-  border-radius: 6px;
-  padding: 8px 12px;
-  font-size: 12px;
-  color: var(--amber);
-  line-height: 1.6;
-  direction: rtl;
-}
-.tip-label { font-weight: 700; margin-left: 5px; }
+    .cmd-info { flex: 1; min-width: 0; }
 
-/* ── COPY BTN ─────────────────────────── */
-.copy-btn {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  color: var(--text2);
-  font-size: 11px;
-  padding: 2px 8px;
-  cursor: pointer;
-  font-family: var(--sans);
-  transition: all .15s;
-  flex-shrink: 0;
-  white-space: nowrap;
-}
-.copy-btn:hover { border-color: var(--green); color: var(--green); }
-.copy-btn.copied { background: var(--green3); border-color: var(--green); color: var(--green); }
+    .cmd-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--green);
+    }
 
-/* ── EMPTY ─────────────────────────── */
-.empty-state {
-  text-align: center;
-  padding: 4rem 2rem;
-  color: var(--text3);
-}
-.empty-state h3 { font-size: 18px; color: var(--text2); margin-bottom: 8px; }
+    .cmd-short {
+      font-size: 0.78rem;
+      color: var(--text2);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
 
-/* ── CAT COLORS ─────────────────────────── */
-.ic-sys   { background: #041c2c; color: var(--blue); }
-.ic-files { background: #0a2e10; color: var(--green); }
-.ic-net   { background: var(--purple2); color: var(--purple); }
-.ic-log   { background: var(--amber2); color: var(--amber); }
-.ic-grep  { background: var(--red2); color: var(--red); }
-.ic-redir { background: #1a0e2e; color: #d8b4fe; }
-.ic-pkg   { background: #0c1d3a; color: var(--blue); }
-.ic-proc  { background: #1a2800; color: #a3e635; }
-.ic-user  { background: var(--cyan2); color: var(--cyan); }
-.ic-perm  { background: #2a1c00; color: #fbbf24; }
-.ic-selinux { background: var(--orange2); color: var(--orange); }
+    .cmd-arrow {
+      color: var(--text2);
+      font-size: 0.9rem;
+      transition: transform 0.3s;
+      flex-shrink: 0;
+    }
 
-.dot-sys    { background: var(--blue); }
-.dot-files  { background: var(--green); }
-.dot-net    { background: var(--purple); }
-.dot-log    { background: var(--amber); }
-.dot-grep   { background: var(--red); }
-.dot-redir  { background: #d8b4fe; }
-.dot-pkg    { background: #60a5fa; }
-.dot-proc   { background: #a3e635; }
-.dot-user   { background: var(--cyan); }
-.dot-perm   { background: #fbbf24; }
-.dot-selinux { background: var(--orange); }
+    .cmd-card.open .cmd-arrow { transform: rotate(180deg); }
 
-@media (max-width: 900px) {
-  .sidebar { display: none; }
-  .header-stats { display: none; }
-  .search-box { max-width: 100%; }
-}
-@media (max-width: 600px) {
-  .content-area { padding: 1rem .75rem; }
-  .header { padding: 0 .75rem; }
-  .tabs-bar { padding: 0 .75rem; }
-  .cards-grid { grid-template-columns: 1fr; }
-  .combos-grid { grid-template-columns: 1fr; }
-}
-</style>
+    /* CMD BODY */
+    .cmd-body {
+      display: none;
+      padding: 0 16px 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .cmd-card.open .cmd-body { display: block; }
+
+    .cmd-desc {
+      font-size: 0.9rem;
+      color: var(--text);
+      line-height: 1.6;
+      padding: 12px 0 10px;
+    }
+
+    .cmd-label {
+      font-size: 0.7rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--red-light);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      margin-top: 10px;
+    }
+
+    .cmd-syntax {
+      background: #0a0a0a;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--red);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      color: var(--yellow);
+      word-break: break-all;
+      line-height: 1.6;
+    }
+
+    .cmd-example {
+      background: #050505;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--green);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      color: var(--green);
+      word-break: break-all;
+      line-height: 1.8;
+    }
+
+    .cmd-example .comment {
+      color: #555;
+    }
+
+    .copy-btn {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      margin-top: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .copy-btn:hover, .copy-btn.copied {
+      background: var(--red);
+      border-color: var(--red);
+      color: #fff;
+    }
+
+    /* DANGER BADGE */
+    .badge {
+      font-size: 0.65rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      flex-shrink: 0;
+    }
+
+    .badge-danger { background: rgba(255,50,50,0.15); color: #ff5555; border: 1px solid #ff555533; }
+    .badge-info { background: rgba(74,158,255,0.15); color: #4a9eff; border: 1px solid #4a9eff33; }
+    .badge-tip { background: rgba(0,255,136,0.1); color: var(--green); border: 1px solid #00ff8833; }
+
+    /* EMPTY */
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text2);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .empty div { font-size: 2rem; margin-bottom: 10px; }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0; right: 0;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      display: flex;
+      padding: 8px 0 12px;
+      z-index: 100;
+    }
+
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 6px;
+      cursor: pointer;
+      color: var(--text2);
+      font-size: 0.65rem;
+      font-family: 'Tajawal', sans-serif;
+      transition: color 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .nav-item.active { color: var(--red); }
+    .nav-item span:first-child { font-size: 1.3rem; }
+
+    /* SPACER for bottom nav */
+    .bottom-spacer { height: 80px; }
+
+    /* PROGRESS */
+    .progress-wrap {
+      background: var(--bg3);
+      border-radius: 4px;
+      height: 4px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--red), var(--red-light));
+      border-radius: 4px;
+      transition: width 0.5s;
+    }
+
+    /* ABOUT PAGE */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .about-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 16px;
+    }
+
+    .about-card h3 {
+      color: var(--red-light);
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    .about-card p {
+      color: var(--text2);
+      font-size: 0.85rem;
+      line-height: 1.7;
+    }
+
+    .tip-card {
+      background: linear-gradient(135deg, #1a0a0a, #0a1a0a);
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 8px 16px;
+    }
+
+    .tip-card .tip-icon { font-size: 1.5rem; margin-bottom: 6px; }
+    .tip-card h4 { color: var(--text); font-size: 0.9rem; margin-bottom: 4px; }
+    .tip-card p { color: var(--text2); font-size: 0.8rem; line-height: 1.6; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .cmd-card { animation: fadeIn 0.3s ease both; }
+  </style>
 </head>
 <body>
 
 <!-- HEADER -->
-<header class="header">
-  <div class="brand">
-    <span class="brand-badge">RHEL</span>
-    <div>
-      <div class="brand-title">دليل Red Hat</div>
-      <div class="brand-sub">أوامر يومية بالدارجة</div>
+<div class="header">
+  <svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="48" fill="#cc0000"/>
+    <path d="M50 15 C30 15 15 30 15 50 C15 70 30 85 50 85 C70 85 85 70 85 50 C85 30 70 15 50 15Z" fill="#aa0000"/>
+    <path d="M35 35 L50 20 L65 35 L65 55 Q65 68 50 75 Q35 68 35 55Z" fill="white" opacity="0.95"/>
+    <path d="M42 48 L50 32 L58 48 L55 48 L55 62 L45 62 L45 48Z" fill="#cc0000"/>
+    <circle cx="50" cy="70" r="4" fill="white" opacity="0.5"/>
+  </svg>
+  <div class="header-text">
+    <h1>RedHat Darija</h1>
+    <span>دليل الأوامر للمبتدئين</span>
+  </div>
+</div>
+
+<!-- PAGE: HOME -->
+<div class="page active" id="page-home">
+
+  <!-- SEARCH -->
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input class="search-box" type="text" id="searchInput" placeholder="ابحث عن أمر... (ex: ls, grep, systemctl)" oninput="filterCommands()">
+  </div>
+
+  <!-- CATEGORIES -->
+  <div class="categories">
+    <button class="cat-btn active" onclick="filterCat('all', this)">🌐 الكل</button>
+    <button class="cat-btn" onclick="filterCat('navigation', this)">📁 ملفات</button>
+    <button class="cat-btn" onclick="filterCat('reseau', this)">🌐 شبكة</button>
+    <button class="cat-btn" onclick="filterCat('services', this)">⚙️ سيرفيس</button>
+    <button class="cat-btn" onclick="filterCat('disques', this)">💾 ديسك</button>
+    <button class="cat-btn" onclick="filterCat('users', this)">👤 يوزرز</button>
+    <button class="cat-btn" onclick="filterCat('process', this)">⚡ بروسيس</button>
+    <button class="cat-btn" onclick="filterCat('paquets', this)">📦 باكيج</button>
+    <button class="cat-btn" onclick="filterCat('permissions', this)">🔐 صلاحيات</button>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar" id="statsBar">
+    <span id="cmdCount">0</span> أمر متاح • اضغط على أي أمر لترى التفاصيل
+  </div>
+
+  <!-- COMMANDS -->
+  <div class="command-list" id="commandList"></div>
+  <div class="bottom-spacer"></div>
+</div>
+
+<!-- PAGE: TIPS -->
+<div class="page" id="page-tips">
+  <div style="padding:16px 0">
+    <div class="section-title" style="margin:0 16px">// نصائح مهمة</div>
+    <div class="tip-card">
+      <div class="tip-icon">⚠️</div>
+      <h4>انتبه من rm -rf</h4>
+      <p>هاد الأمر كيمسح كل شيء بدون رجعة. دير backup قبل أي حاجة.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">💡</div>
+      <h4>Tab = إكمال تلقائي</h4>
+      <p>كتبت نص الأمر؟ دوز Tab وLinux غادي يكمله عليك بلا ما تكتب كامل.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🔍</div>
+      <h4>man = دليل كل أمر</h4>
+      <p>ما عارفتيش واش كيدير أمر؟ كتب: <code style="color:var(--green)">man ls</code> وغادي تلقى كل شيء.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🕐</div>
+      <h4>history = تاريخ الأوامر</h4>
+      <p>كتب <code style="color:var(--green)">history</code> باش تشوف كل الأوامر اللي درتيها. Ctrl+R باش تبحث فيهم.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🛡️</div>
+      <h4>sudo = صلاحيات root</h4>
+      <p>كل أمر خطير يحتاج sudo قبله. كيعطيك صلاحيات المدير مؤقتاً.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">📋</div>
+      <h4>Ctrl+C = إيقاف أمر</h4>
+      <p>أمر عالق ماشي؟ دوز Ctrl+C باش توقفه فوراً.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🔗</div>
+      <h4>Pipe | = ربط الأوامر</h4>
+      <p>كتقدر تربط أوامر ببعضها: <code style="color:var(--green)">ps aux | grep nginx</code> كيقلب على nginx فقط.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">📁</div>
+      <h4>~ = مجلدك الشخصي</h4>
+      <p>~ كتعني /home/يوزرنيمك. كتقدر تكتب cd ~ باش ترجع للبيت دايماً.</p>
     </div>
   </div>
-  <div class="search-box">
-    <span class="search-icon">🔍</span>
-    <input type="text" id="searchInput" placeholder="ابحث... grep، tail، systemctl، firewall" oninput="doSearch()">
-  </div>
-  <div class="header-stats">
-    <div class="hstat"><span class="hstat-n" id="totalCount">0</span><span class="hstat-l">أمر</span></div>
-    <div class="hstat"><span class="hstat-n">11</span><span class="hstat-l">فئة</span></div>
-  </div>
-</header>
+  <div class="bottom-spacer"></div>
+</div>
 
-<!-- TABS -->
-<nav class="tabs-bar" id="tabsBar"></nav>
+<!-- PAGE: ABOUT -->
+<div class="page" id="page-about">
+  <div style="padding:16px 0">
+    <div class="about-card" style="text-align:center; background: linear-gradient(135deg, #1a0000, #0a0a0a)">
+      <svg width="70" height="70" viewBox="0 0 100 100" style="margin:0 auto 12px">
+        <circle cx="50" cy="50" r="48" fill="#cc0000"/>
+        <path d="M50 15 C30 15 15 30 15 50 C15 70 30 85 50 85 C70 85 85 70 85 50 C85 30 70 15 50 15Z" fill="#aa0000"/>
+        <path d="M35 35 L50 20 L65 35 L65 55 Q65 68 50 75 Q35 68 35 55Z" fill="white" opacity="0.95"/>
+        <path d="M42 48 L50 32 L58 48 L55 48 L55 62 L45 62 L45 48Z" fill="#cc0000"/>
+      </svg>
+      <h2 style="color:#fff; font-size:1.4rem">RedHat Darija</h2>
+      <p style="color:var(--red-light); font-size:0.8rem; font-family:'JetBrains Mono',monospace">دليل Red Hat Linux بالدارجة</p>
+    </div>
+    <div class="about-card">
+      <h3>🎯 علاش هاد التطبيق؟</h3>
+      <p>هاد الدليل مصمم للمبتدئين اللي بغاو يتعلمو Red Hat Linux بطريقة سهلة ومفهومة بالدارجة المغربية.</p>
+    </div>
+    <div class="about-card">
+      <h3>📊 إحصائيات</h3>
+      <p>✅ +60 أمر موثق<br>✅ أمثلة عملية لكل أمر<br>✅ يشتغل بدون انترنت<br>✅ مجاني 100%</p>
+    </div>
+    <div class="about-card">
+      <h3>🚀 نصيحة</h3>
+      <p>أحسن طريقة تتعلم هي التطبيق العملي. جرب كل أمر على virtual machine ديالك ولا على KillerCoda.</p>
+    </div>
+  </div>
+  <div class="bottom-spacer"></div>
+</div>
 
-<!-- PAGE -->
-<div class="page">
-  <aside class="sidebar" id="sidebar"></aside>
-  <main class="content-area" id="contentArea"></main>
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="nav-item active" id="nav-home" onclick="showPage('home')">
+    <span>📋</span>
+    <span>أوامر</span>
+  </div>
+  <div class="nav-item" id="nav-tips" onclick="showPage('tips')">
+    <span>💡</span>
+    <span>نصائح</span>
+  </div>
+  <div class="nav-item" id="nav-about" onclick="showPage('about')">
+    <span>ℹ️</span>
+    <span>عن التطبيق</span>
+  </div>
 </div>
 
 <script>
-/* ────────────────────────────────────────────────────
-   DATA
-──────────────────────────────────────────────────── */
-const CATEGORIES = [
-  { id:'sys',    label:'النظام',           icon:'⚙️',  dot:'dot-sys' },
-  { id:'files',  label:'الملفات',          icon:'📁',  dot:'dot-files' },
-  { id:'net',    label:'الشبكة',           icon:'🌐',  dot:'dot-net' },
-  { id:'log',    label:'اللوغات',          icon:'📋',  dot:'dot-log' },
-  { id:'grep',   label:'Grep والتصفية',    icon:'🔍',  dot:'dot-grep' },
-  { id:'redir',  label:'التحويل والـPipe', icon:'➡️',  dot:'dot-redir' },
-  { id:'pkg',    label:'الحزم dnf/rpm',    icon:'📦',  dot:'dot-pkg' },
-  { id:'proc',   label:'البروسيسات',       icon:'⚡',  dot:'dot-proc' },
-  { id:'user',   label:'المستخدمين',       icon:'👤',  dot:'dot-user' },
-  { id:'perm',   label:'الصلاحيات',        icon:'🔐',  dot:'dot-perm' },
-  { id:'selinux',label:'SELinux',          icon:'🛡️',  dot:'dot-selinux' },
+const commands = [
+  // NAVIGATION & FICHIERS
+  { cat: 'navigation', icon: '📋', color: '#1a3a1a', name: 'ls', short: 'عرض محتوى المجلد', badge: null,
+    desc: 'ls كيعرض ليك كل الملفات والمجلدات اللي فداخل المجلد الحالي. هو أول أمر تتعلمه في Linux.',
+    syntax: 'ls [options] [dossier]',
+    examples: `ls                    <span class="comment"># عرض الملفات العادية</span>\nls -l                 <span class="comment"># عرض تفصيلي مع الصلاحيات</span>\nls -la                <span class="comment"># عرض كل شيء + الملفات المخفية</span>\nls -lh                <span class="comment"># عرض الأحجام بشكل مقروء</span>\nls /var/log           <span class="comment"># عرض مجلد معين</span>` },
+
+  { cat: 'navigation', icon: '📁', color: '#1a2a3a', name: 'cd', short: 'التنقل بين المجلدات', badge: null,
+    desc: 'cd كيخليك تتنقل من مجلد لآخر. زعما كتمشي من غرفة لغرفة فالبيت.',
+    syntax: 'cd [chemin]',
+    examples: `cd /var/log           <span class="comment"># روح للمجلد /var/log</span>\ncd ..                 <span class="comment"># ارجع لمجلد أعلى</span>\ncd ~                  <span class="comment"># ارجع لمجلدك الشخصي</span>\ncd -                  <span class="comment"># ارجع للمجلد السابق</span>` },
+
+  { cat: 'navigation', icon: '📍', color: '#2a1a3a', name: 'pwd', short: 'عرض المسار الحالي', badge: null,
+    desc: 'pwd كيقوليك فين أنت دابا في النظام. مفيد إلا ضعتي!',
+    syntax: 'pwd',
+    examples: `pwd\n<span class="comment"># النتيجة: /home/utilisateur/documents</span>` },
+
+  { cat: 'navigation', icon: '📂', color: '#1a3a2a', name: 'mkdir', short: 'إنشاء مجلد جديد', badge: null,
+    desc: 'mkdir كيخليك تنشئ مجلد جديد. زعما كتبني غرفة جديدة فالبيت.',
+    syntax: 'mkdir [options] nom_dossier',
+    examples: `mkdir monDossier      <span class="comment"># إنشاء مجلد بسيط</span>\nmkdir -p a/b/c        <span class="comment"># إنشاء مجلدات متداخلة دفعة وحدة</span>\nmkdir -p /opt/app/{logs,config,data}  <span class="comment"># إنشاء عدة مجلدات</span>` },
+
+  { cat: 'navigation', icon: '🗑️', color: '#3a1a1a', name: 'rm', short: 'حذف ملف أو مجلد', badge: 'danger',
+    desc: 'rm كيمسح الملفات. انتبه! ما فيهاش Recycle Bin في Linux. اللي مسحتيه راه مسوح!',
+    syntax: 'rm [options] fichier',
+    examples: `rm fichier.txt        <span class="comment"># مسح ملف</span>\nrm -r dossier/        <span class="comment"># مسح مجلد بكل محتواه</span>\nrm -f fichier.txt     <span class="comment"># مسح بالقوة بدون سؤال</span>\n<span class="comment"># ⚠️ rm -rf / = كارثة! ما دريها ابداً!</span>` },
+
+  { cat: 'navigation', icon: '📄', color: '#1a2a2a', name: 'cp', short: 'نسخ ملف أو مجلد', badge: null,
+    desc: 'cp كينسخ ملفات ومجلدات من مكان لآخر.',
+    syntax: 'cp [options] source destination',
+    examples: `cp fichier.txt /tmp/  <span class="comment"># نسخ ملف للـ tmp</span>\ncp -r dossier/ /backup/  <span class="comment"># نسخ مجلد كامل</span>\ncp -p fichier.txt backup.txt  <span class="comment"># نسخ مع الحفاظ على الصلاحيات</span>` },
+
+  { cat: 'navigation', icon: '✂️', color: '#2a2a1a', name: 'mv', short: 'نقل أو إعادة تسمية', badge: null,
+    desc: 'mv كيشيل الملف من مكان ويحطه في آخر. كيستعمل أيضاً لإعادة التسمية.',
+    syntax: 'mv source destination',
+    examples: `mv fichier.txt /tmp/  <span class="comment"># نقل ملف</span>\nmv ancien.txt nouveau.txt  <span class="comment"># إعادة تسمية</span>\nmv dossier/ /opt/     <span class="comment"># نقل مجلد</span>` },
+
+  { cat: 'navigation', icon: '👁️', color: '#1a1a3a', name: 'cat', short: 'عرض محتوى ملف', badge: null,
+    desc: 'cat كيعرض ليك محتوى ملف مباشرة في الشاشة. مفيد للملفات الصغيرة.',
+    syntax: 'cat [options] fichier',
+    examples: `cat /etc/hostname      <span class="comment"># عرض اسم السيرفر</span>\ncat /etc/os-release    <span class="comment"># عرض إصدار Red Hat</span>\ncat fichier1 fichier2  <span class="comment"># عرض ملفين ببعضهم</span>` },
+
+  { cat: 'navigation', icon: '🔎', color: '#1a2a3a', name: 'grep', short: 'البحث في الملفات', badge: null,
+    desc: 'grep هو محرك البحث ديال Linux. كيبحث عن نص معين داخل ملف أو نتائج أمر.',
+    syntax: 'grep [options] "pattern" fichier',
+    examples: `grep "error" /var/log/messages  <span class="comment"># ابحث عن كلمة error</span>\ngrep -i "root" /etc/passwd      <span class="comment"># بحث بدون حساسية للحروف</span>\ngrep -r "nginx" /etc/           <span class="comment"># بحث داخل كل الملفات</span>\nps aux | grep httpd             <span class="comment"># ابحث في نتائج أمر آخر</span>` },
+
+  { cat: 'navigation', icon: '🔍', color: '#2a1a2a', name: 'find', short: 'البحث عن ملفات', badge: null,
+    desc: 'find كيبحث عن ملفات ومجلدات بناءً على الاسم أو الحجم أو التاريخ.',
+    syntax: 'find [chemin] [options]',
+    examples: `find / -name "httpd.conf"       <span class="comment"># ابحث عن ملف بالاسم</span>\nfind /var -name "*.log"         <span class="comment"># ابحث عن كل ملفات log</span>\nfind /tmp -mtime +7             <span class="comment"># ملفات أقدم من 7 أيام</span>` },
+
+  { cat: 'navigation', icon: '📝', color: '#1a3a3a', name: 'tail', short: 'عرض آخر سطور ملف', badge: null,
+    desc: 'tail كيعرض آخر سطور ملف. مفيد جداً لمراقبة الـ logs في وقت حقيقي!',
+    syntax: 'tail [options] fichier',
+    examples: `tail /var/log/messages          <span class="comment"># آخر 10 سطور</span>\ntail -n 50 /var/log/messages    <span class="comment"># آخر 50 سطر</span>\ntail -f /var/log/messages       <span class="comment"># مراقبة مباشرة (Ctrl+C باش توقف)</span>` },
+
+  { cat: 'navigation', icon: '📊', color: '#2a3a1a', name: 'head', short: 'عرض أول سطور ملف', badge: null,
+    desc: 'head كيعرض أول سطور ملف. عكس tail.',
+    syntax: 'head [options] fichier',
+    examples: `head /etc/passwd               <span class="comment"># أول 10 سطور</span>\nhead -n 5 /var/log/messages    <span class="comment"># أول 5 سطور فقط</span>` },
+
+  // RESEAU
+  { cat: 'reseau', icon: '🌐', color: '#1a2a3a', name: 'ip addr', short: 'عرض عناوين IP', badge: null,
+    desc: 'ip addr كيعرض ليك كل الـ interfaces الشبكة والـ IP ديالهم. بديل حديث لـ ifconfig.',
+    syntax: 'ip addr show',
+    examples: `ip addr show                   <span class="comment"># عرض كل الـ interfaces</span>\nip addr show ens33             <span class="comment"># عرض interface معين</span>\nip -4 addr                     <span class="comment"># عرض IPv4 فقط</span>` },
+
+  { cat: 'reseau', icon: '📡', color: '#1a3a2a', name: 'ping', short: 'اختبار الاتصال', badge: null,
+    desc: 'ping كيبعث رسالة لجهاز آخر ويشوف إذا كان يرد. زعما كتطرق الباب وتشوف فين كيجاوب.',
+    syntax: 'ping [options] hôte',
+    examples: `ping google.com                <span class="comment"># ping مستمر (Ctrl+C باش توقف)</span>\nping -c 4 8.8.8.8              <span class="comment"># ping 4 مرات فقط</span>\nping -c 3 192.168.1.1          <span class="comment"># ping الـ router</span>` },
+
+  { cat: 'reseau', icon: '🔌', color: '#2a1a3a', name: 'ss', short: 'عرض الـ ports المفتوحة', badge: null,
+    desc: 'ss كيعرض كل الـ connections والـ ports المفتوحة على السيرفر. بديل حديث لـ netstat.',
+    syntax: 'ss [options]',
+    examples: `ss -tlnp                       <span class="comment"># ports TCP المفتوحة مع البروسيس</span>\nss -ulnp                       <span class="comment"># ports UDP المفتوحة</span>\nss -s                          <span class="comment"># ملخص الـ connections</span>` },
+
+  { cat: 'reseau', icon: '⬇️', color: '#1a3a3a', name: 'curl', short: 'تحميل من الانترنت', badge: null,
+    desc: 'curl كيتواصل مع URLs. مفيد جداً للتحقق من APIs والمواقع من السطر الأوامر.',
+    syntax: 'curl [options] URL',
+    examples: `curl https://google.com        <span class="comment"># جلب محتوى موقع</span>\ncurl -I https://google.com     <span class="comment"># عرض الـ headers فقط</span>\ncurl -o fichier.zip URL        <span class="comment"># تحميل ملف</span>` },
+
+  { cat: 'reseau', icon: '🔧', color: '#2a2a3a', name: 'nmcli', short: 'إدارة الشبكة', badge: null,
+    desc: 'nmcli هو الأداة الرسمية لإدارة الشبكات في Red Hat. كيخليك تشغل وتوقف الـ connections.',
+    syntax: 'nmcli [options]',
+    examples: `nmcli device status            <span class="comment"># حالة كل الـ interfaces</span>\nnmcli connection show          <span class="comment"># عرض الـ connections</span>\nnmcli connection up eth0       <span class="comment"># تشغيل interface</span>\nnmcli connection down eth0     <span class="comment"># إيقاف interface</span>` },
+
+  // SERVICES
+  { cat: 'services', icon: '⚙️', color: '#2a2a1a', name: 'systemctl status', short: 'حالة سيرفيس', badge: null,
+    desc: 'systemctl status كيعرض ليك حالة أي سيرفيس: شغال ولا موقوف ولا فيه مشكل.',
+    syntax: 'systemctl status [service]',
+    examples: `systemctl status sshd          <span class="comment"># حالة SSH</span>\nsystemctl status httpd         <span class="comment"># حالة Apache</span>\nsystemctl status firewalld     <span class="comment"># حالة Firewall</span>` },
+
+  { cat: 'services', icon: '▶️', color: '#1a3a1a', name: 'systemctl start', short: 'تشغيل سيرفيس', badge: null,
+    desc: 'systemctl start كيبدأ تشغيل سيرفيس. ما كيحفظش التغيير بعد الإعادة.',
+    syntax: 'systemctl start [service]',
+    examples: `systemctl start sshd           <span class="comment"># تشغيل SSH</span>\nsystemctl start httpd          <span class="comment"># تشغيل Apache</span>\nsystemctl start nginx          <span class="comment"># تشغيل Nginx</span>` },
+
+  { cat: 'services', icon: '⏹️', color: '#3a1a1a', name: 'systemctl stop', short: 'إيقاف سيرفيس', badge: null,
+    desc: 'systemctl stop كيوقف سيرفيس شغال.',
+    syntax: 'systemctl stop [service]',
+    examples: `systemctl stop httpd           <span class="comment"># إيقاف Apache</span>\nsystemctl stop firewalld       <span class="comment"># إيقاف الـ Firewall</span>` },
+
+  { cat: 'services', icon: '🔄', color: '#1a2a3a', name: 'systemctl restart', short: 'إعادة تشغيل سيرفيس', badge: null,
+    desc: 'systemctl restart كيوقف السيرفيس ويعيد تشغيله. مفيد بعد تغيير الـ config.',
+    syntax: 'systemctl restart [service]',
+    examples: `systemctl restart sshd         <span class="comment"># إعادة تشغيل SSH</span>\nsystemctl restart httpd        <span class="comment"># إعادة تشغيل Apache</span>` },
+
+  { cat: 'services', icon: '🔁', color: '#2a1a3a', name: 'systemctl enable', short: 'تفعيل عند الإقلاع', badge: null,
+    desc: 'systemctl enable كيخلي السيرفيس يبدأ تلقائياً كل ما السيرفر دار restart.',
+    syntax: 'systemctl enable [service]',
+    examples: `systemctl enable sshd          <span class="comment"># SSH يبدأ تلقائياً</span>\nsystemctl enable --now httpd   <span class="comment"># تفعيل وتشغيل دفعة وحدة</span>` },
+
+  { cat: 'services', icon: '📋', color: '#1a3a2a', name: 'journalctl', short: 'عرض سجلات النظام', badge: null,
+    desc: 'journalctl كيعرض كل الـ logs الخاصة بالـ services والنظام.',
+    syntax: 'journalctl [options]',
+    examples: `journalctl -u sshd             <span class="comment"># logs SSH فقط</span>\njournalctl -f                  <span class="comment"># مراقبة logs مباشرة</span>\njournalctl --since "1 hour ago" <span class="comment"># logs الساعة الأخيرة</span>\njournalctl -xe                 <span class="comment"># logs الأخطاء الأخيرة</span>` },
+
+  // DISQUES
+  { cat: 'disques', icon: '💾', color: '#2a1a1a', name: 'df', short: 'مساحة الـ filesystem', badge: null,
+    desc: 'df كيعرض مساحة الأقراص المستعملة والمتاحة. مفيد جداً لمعرفة إذا كان القرص ممتلئ.',
+    syntax: 'df [options]',
+    examples: `df -h                          <span class="comment"># عرض بصيغة مقروءة (GB, MB)</span>\ndf -hT                         <span class="comment"># مع نوع الـ filesystem</span>\ndf -h /var                     <span class="comment"># مساحة مجلد معين فقط</span>` },
+
+  { cat: 'disques', icon: '📊', color: '#1a1a2a', name: 'du', short: 'حجم المجلدات', badge: null,
+    desc: 'du كيحسب المساحة اللي كيأخدها كل مجلد. مفيد باش تعرف شكون كيأكل المساحة.',
+    syntax: 'du [options] [chemin]',
+    examples: `du -sh /var/*                  <span class="comment"># حجم كل مجلد في /var</span>\ndu -sh /*                      <span class="comment"># حجم كل مجلد في /</span>\ndu -h --max-depth=1 /var       <span class="comment"># حجم بعمق مجلد واحد</span>` },
+
+  { cat: 'disques', icon: '🗂️', color: '#2a2a1a', name: 'lsblk', short: 'عرض الأقراص والـ partitions', badge: null,
+    desc: 'lsblk كيعرض كل الأقراص والـ partitions بشكل شجري. أول أمر تديه باش تفهم البنية.',
+    syntax: 'lsblk',
+    examples: `lsblk                          <span class="comment"># عرض كل الأقراص</span>\nlsblk -f                       <span class="comment"># مع نوع الـ filesystem</span>` },
+
+  { cat: 'disques', icon: '📦', color: '#1a3a1a', name: 'pvs / vgs / lvs', short: 'إدارة LVM', badge: null,
+    desc: 'هاد الأوامر الثلاثة للـ LVM: pvs للأقراص الفيزيائية، vgs للمجموعات، lvs للـ volumes المنطقية.',
+    syntax: 'pvs | vgs | lvs',
+    examples: `pvs                            <span class="comment"># الأقراص الفيزيائية</span>\nvgs                            <span class="comment"># مجموعات الـ volumes</span>\nlvs                            <span class="comment"># الـ volumes المنطقية</span>` },
+
+  { cat: 'disques', icon: '➕', color: '#1a2a1a', name: 'lvextend', short: 'توسيع filesystem', badge: 'info',
+    desc: 'lvextend كيزيد المساحة لـ filesystem موجود. بعده خاصك تدير xfs_growfs أو resize2fs.',
+    syntax: 'lvextend -L +[taille] [volume]',
+    examples: `lvextend -L +1G /dev/mapper/rhel-var  <span class="comment"># زيد 1GB</span>\nxfs_growfs /var                <span class="comment"># أعلم الـ filesystem (xfs)</span>\nresize2fs /dev/mapper/rhel-var <span class="comment"># أعلم الـ filesystem (ext4)</span>` },
+
+  // USERS
+  { cat: 'users', icon: '👤', color: '#2a1a2a', name: 'whoami', short: 'من أنا؟', badge: null,
+    desc: 'whoami كيعرض ليك اسم المستخدم الحالي اللي دخلت بيه.',
+    syntax: 'whoami',
+    examples: `whoami\n<span class="comment"># النتيجة: root أو essofi</span>` },
+
+  { cat: 'users', icon: '🆔', color: '#1a2a2a', name: 'id', short: 'معلومات المستخدم', badge: null,
+    desc: 'id كيعرض ليك UID و GID والـ groups اللي أنت فيهم.',
+    syntax: 'id [utilisateur]',
+    examples: `id                             <span class="comment"># معلوماتك أنت</span>\nid root                        <span class="comment"># معلومات root</span>\nid essofi                      <span class="comment"># معلومات مستخدم معين</span>` },
+
+  { cat: 'users', icon: '➕', color: '#1a3a1a', name: 'useradd', short: 'إضافة مستخدم', badge: null,
+    desc: 'useradd كيضيف مستخدم جديد للنظام.',
+    syntax: 'useradd [options] username',
+    examples: `useradd ahmed                  <span class="comment"># إضافة مستخدم بسيط</span>\nuseradd -m -s /bin/bash ahmed  <span class="comment"># مع مجلد شخصي وshell</span>\npasswd ahmed                   <span class="comment"># تعيين كلمة المرور</span>` },
+
+  { cat: 'users', icon: '🔑', color: '#2a2a1a', name: 'passwd', short: 'تغيير كلمة المرور', badge: null,
+    desc: 'passwd كيغير كلمة مرور مستخدم.',
+    syntax: 'passwd [utilisateur]',
+    examples: `passwd                         <span class="comment"># غير كلمة مرورك أنت</span>\npasswd ahmed                   <span class="comment"># غير كلمة مرور ahmed (كـ root)</span>` },
+
+  { cat: 'users', icon: '🦸', color: '#3a2a1a', name: 'sudo', short: 'تنفيذ كـ root', badge: 'info',
+    desc: 'sudo كيخليك تنفذ أمر بصلاحيات المدير (root) بدون ما تكون root دائماً.',
+    syntax: 'sudo [commande]',
+    examples: `sudo systemctl restart sshd    <span class="comment"># restart كـ root</span>\nsudo -i                        <span class="comment"># ادخل كـ root كامل</span>\nsudo su -                      <span class="comment"># تحول لـ root</span>` },
+
+  // PROCESS
+  { cat: 'process', icon: '⚡', color: '#2a2a1a', name: 'ps', short: 'عرض البروسيسات', badge: null,
+    desc: 'ps كيعرض البروسيسات الشغالة حالياً. ps aux هو الأكثر استعمالاً.',
+    syntax: 'ps [options]',
+    examples: `ps aux                         <span class="comment"># كل البروسيسات بالتفصيل</span>\nps aux | grep httpd            <span class="comment"># ابحث عن بروسيس معين</span>\nps -ef                         <span class="comment"># عرض آخر بصيغة أخرى</span>` },
+
+  { cat: 'process', icon: '📈', color: '#1a2a1a', name: 'top', short: 'مراقبة النظام مباشرة', badge: null,
+    desc: 'top كيعرض البروسيسات ومواردها في وقت حقيقي. زعما Task Manager في Windows.',
+    syntax: 'top',
+    examples: `top                            <span class="comment"># q باش تخرج</span>\ntop -u apache                  <span class="comment"># بروسيسات مستخدم معين</span>\n<span class="comment"># فداخل top: P=ترتيب CPU, M=ترتيب RAM, k=اقتل بروسيس</span>` },
+
+  { cat: 'process', icon: '❌', color: '#3a1a1a', name: 'kill', short: 'إيقاف بروسيس', badge: 'danger',
+    desc: 'kill كيوقف بروسيس عن طريق PID ديالو. استعمل kill -9 إذا ما بغاش يوقف.',
+    syntax: 'kill [signal] PID',
+    examples: `kill 1234                      <span class="comment"># إيقاف بروسيس بـ PID</span>\nkill -9 1234                   <span class="comment"># إيقاف قسري</span>\nkillall httpd                  <span class="comment"># إيقاف كل بروسيسات باسم</span>` },
+
+  { cat: 'process', icon: '🧠', color: '#1a1a3a', name: 'free', short: 'عرض استخدام RAM', badge: null,
+    desc: 'free كيعرض ليك المساحة الكاملة والمستعملة والحرة من RAM.',
+    syntax: 'free [options]',
+    examples: `free -h                        <span class="comment"># عرض بصيغة مقروءة</span>\nfree -m                        <span class="comment"># عرض بـ Megabytes</span>` },
+
+  // PAQUETS
+  { cat: 'paquets', icon: '📦', color: '#2a1a3a', name: 'dnf install', short: 'تثبيت برنامج', badge: null,
+    desc: 'dnf install كيثبت برامج وـ packages من الانترنت تلقائياً. هو المعيار في RHEL 8/9.',
+    syntax: 'dnf install [package]',
+    examples: `dnf install httpd              <span class="comment"># تثبيت Apache</span>\ndnf install -y nginx           <span class="comment"># تثبيت بدون سؤال</span>\ndnf install vim wget curl      <span class="comment"># تثبيت عدة برامج</span>` },
+
+  { cat: 'paquets', icon: '🔍', color: '#1a2a3a', name: 'dnf search', short: 'البحث عن برنامج', badge: null,
+    desc: 'dnf search كيبحث عن برنامج في المستودعات.',
+    syntax: 'dnf search [terme]',
+    examples: `dnf search nginx               <span class="comment"># البحث عن nginx</span>\ndnf info httpd                 <span class="comment"># معلومات تفصيلية عن برنامج</span>` },
+
+  { cat: 'paquets', icon: '🗑️', color: '#3a1a1a', name: 'dnf remove', short: 'حذف برنامج', badge: null,
+    desc: 'dnf remove كيحذف برنامج من النظام.',
+    syntax: 'dnf remove [package]',
+    examples: `dnf remove httpd               <span class="comment"># حذف Apache</span>` },
+
+  { cat: 'paquets', icon: '🔄', color: '#1a3a1a', name: 'dnf update', short: 'تحديث النظام', badge: null,
+    desc: 'dnf update كيحدث كل البرامج لآخر إصدار. مهم لأمان النظام.',
+    syntax: 'dnf update [package]',
+    examples: `dnf update                     <span class="comment"># تحديث كل شيء</span>\ndnf update httpd               <span class="comment"># تحديث برنامج معين</span>\ndnf check-update               <span class="comment"># شوف التحديثات المتاحة فقط</span>` },
+
+  // PERMISSIONS
+  { cat: 'permissions', icon: '🔐', color: '#2a2a2a', name: 'chmod', short: 'تغيير صلاحيات ملف', badge: null,
+    desc: 'chmod كيغير صلاحيات ملف: من يقدر يقرأه، يكتب فيه، أو ينفذه.',
+    syntax: 'chmod [permissions] fichier',
+    examples: `chmod 755 script.sh            <span class="comment"># rwxr-xr-x (سكريبت قابل للتنفيذ)</span>\nchmod 644 fichier.txt          <span class="comment"># rw-r--r-- (ملف عادي)</span>\nchmod +x script.sh             <span class="comment"># أضف صلاحية التنفيذ</span>\nchmod -R 755 dossier/          <span class="comment"># غير صلاحيات مجلد كامل</span>` },
+
+  { cat: 'permissions', icon: '👑', color: '#2a1a1a', name: 'chown', short: 'تغيير مالك الملف', badge: null,
+    desc: 'chown كيغير المالك والمجموعة ديال ملف أو مجلد.',
+    syntax: 'chown user:group fichier',
+    examples: `chown root:root fichier.txt    <span class="comment"># نسب الملف لـ root</span>\nchown apache:apache /var/www/  <span class="comment"># نسب لـ apache</span>\nchown -R apache /var/www/html/ <span class="comment"># غير المالك لكل الملفات</span>` },
+
+  { cat: 'permissions', icon: '🔥', color: '#3a1a2a', name: 'firewall-cmd', short: 'إدارة الـ Firewall', badge: 'info',
+    desc: 'firewall-cmd هو أداة إدارة الـ Firewall في Red Hat. كيفتح ويسكر الـ ports.',
+    syntax: 'firewall-cmd [options]',
+    examples: `firewall-cmd --list-all        <span class="comment"># عرض كل القواعد</span>\nfirewall-cmd --add-service=http --permanent  <span class="comment"># فتح HTTP</span>\nfirewall-cmd --add-port=8080/tcp --permanent <span class="comment"># فتح port معين</span>\nfirewall-cmd --reload          <span class="comment"># تطبيق التغييرات</span>` },
 ];
 
-const COMBOS = [
-  { cats:['log','grep'], title:'🔥 مراقبة اللوغات مباشرة + حفظ الأخطاء', lines:[
-    ['tail -f /var/log/messages | grep -iE \'error|warn|crit\' | tee /tmp/errors_$(date +%F).txt', 'راقب + صفّي + احفظ كلهم مع بعض']
-  ]},
-  { cats:['grep'], title:'🌐 أكثر عناوين IP اللي طلبت 404', lines:[
-    ['cat /var/log/nginx/access.log | awk \'$9==404{print $1}\' | sort | uniq -c | sort -rn | head -10', 'أكثر 10 IP']
-  ]},
-  { cats:['net'], title:'🔌 شوف من يستمع على port معين', lines:[
-    ['ss -tlnp | grep \':80\'', 'من على port 80'],
-    ['lsof -i :443', 'من على HTTPS'],
-  ]},
-  { cats:['selinux'], title:'🛡️ تشخيص سريع لمشكلة SELinux', lines:[
-    ['setenforce 0 && systemctl restart nginx && curl -I http://localhost', 'ضع Permissive واختبر — إذا شغل = SELinux هو السبب'],
-    ['setenforce 1', 'ارجع Enforcing دايماً بعد الاختبار!'],
-  ]},
-  { cats:['proc'], title:'⚡ من يأكل الموارد؟', lines:[
-    ['ps aux --sort=-%cpu | head -5', 'أكثر 5 استهلاكاً للمعالج'],
-    ['ps aux --sort=-%mem | head -5', 'أكثر 5 استهلاكاً للرام'],
-  ]},
-  { cats:['files'], title:'💾 ابحث عمن يأكل المساحة', lines:[
-    ['du -sh /var/log/* | sort -rh | head -10', 'أكبر 10 ملفات/مجلدات في /var/log'],
-    ['df -h | grep -v tmpfs', 'حالة الأقسام بدون tmpfs'],
-  ]},
-];
+let currentCat = 'all';
+let currentSearch = '';
 
-const DATA = [
-/* ══ SYSTEM ══════════════════════════════════════════════ */
-{c:'sys',icon:'⚙️',n:'systemctl',ar:'تحكم كامل في الخدمات',s:'أهم أمر في RHEL — ابدأ توقف أعد شغّل الخدمات',
-d:'systemctl = Swiss Army Knife ديال إدارة الخدمات. لازم تعرفها غيباً.',
-ex:[
-  ['systemctl start nginx','ابدأ خدمة'],
-  ['systemctl stop nginx','وقّف خدمة'],
-  ['systemctl restart nginx','أعد التشغيل (قطع ثم بداية)'],
-  ['systemctl reload nginx','حمّل config جديدة بلا قطع'],
-  ['systemctl enable nginx','شغّل تلقائياً مع الجهاز'],
-  ['systemctl disable nginx','لا تشغّلها تلقائياً'],
-  ['systemctl status nginx','شوف الحالة الكاملة مع آخر logs'],
-  ['systemctl is-active nginx','هل شغالة؟ — exit 0=ايه، 1=لا'],
-  ['systemctl is-enabled nginx','هل مفعّلة مع الإقلاع؟'],
-  ['systemctl list-units --type=service','لائحة كل الخدمات'],
-  ['systemctl list-units --failed','الخدمات اللي خبات (مهمة!)'],
-  ['systemctl daemon-reload','أعد تحميل إعدادات systemd'],
-  ['systemctl mask nginx','امنع الخدمة من التشغيل نهائياً'],
-  ['systemctl unmask nginx','أزل المنع'],
-],tip:'systemctl status = أول شيء تشوف عند أي مشكلة في خدمة',
-flags:['start','stop','restart','reload','enable','disable','status','--failed','daemon-reload']},
-
-{c:'sys',icon:'📖',n:'journalctl',ar:'لوغات systemd — أقوى من tail',s:'اقرأ logs أي خدمة مع فيلتر بالتاريخ والأولوية',
-d:'journalctl = مستودع كل الـlogs في RHEL الحديث. أقوى وأنظف من cat للملفات.',
-ex:[
-  ['journalctl -u nginx','logs خدمة nginx'],
-  ['journalctl -u nginx -f','متابعة مباشرة (مثل tail -f)'],
-  ['journalctl -u nginx -n 100','آخر 100 سطر'],
-  ['journalctl -u nginx --since "1 hour ago"','من ساعة'],
-  ['journalctl -u nginx --since "2024-01-01" --until "2024-01-02"','بين تاريخين'],
-  ['journalctl -p err','أخطاء فقط — من كل الخدمات'],
-  ['journalctl -p err -b','أخطاء من آخر restart'],
-  ['journalctl -p warning -b','تحذيرات + أخطاء من آخر restart'],
-  ['journalctl --no-pager -u nginx | grep ERROR','مع grep'],
-  ['journalctl -xe','آخر رسائل مع context مفصّل'],
-  ['journalctl --disk-usage','حجم logs على الديسك'],
-  ['journalctl --vacuum-time=30d','احذف logs أقدم من 30 يوم'],
-],tip:'-f = follow | -p err = أخطاء | -b = من آخر boot — الثلاثة الأكثر استعمالاً',
-flags:['-u','-f','-n','-p err/warning','-b','--since','--until','--no-pager','-xe']},
-
-{c:'sys',icon:'💻',n:'hostnamectl / uname',ar:'هوية الجهاز والنظام',s:'أول شيء تشوف في أي مشن — نسخة RHEL والكيرنيل',
-d:'تعرّف على السيرفر قبل ما تبدأ — نسخة النظام والمعمارية واسم الجهاز.',
-ex:[
-  ['hostnamectl','كل معلومات الجهاز دفعة واحدة'],
-  ['hostnamectl set-hostname prod-server-01','غير اسم الجهاز'],
-  ['cat /etc/redhat-release','نسخة Red Hat بالضبط'],
-  ['cat /etc/os-release','معلومات OS كاملة (JSON-style)'],
-  ['uname -a','كيرنيل + معمارية + كل شيء'],
-  ['uname -r','نسخة الكيرنيل فقط'],
-  ['uname -m','المعمارية: x86_64'],
-  ['lscpu','معلومات المعالج التفصيلية'],
-  ['lscpu | grep "Model name"','نوع المعالج فقط'],
-  ['lsmem','معلومات الذاكرة'],
-  ['dmidecode -t system','معلومات الهاردوير (يحتاج root)'],
-],tip:'cat /etc/redhat-release = أول أمر تديره في أي مشن جديد',flags:[]},
-
-{c:'sys',icon:'⏱️',n:'timedatectl / date',ar:'الوقت والتوقيت',s:'مهم جداً — الوقت الخاطئ يكسر TLS و Kerberos',
-d:'الوقت الخاطئ يسبب مشاكل في الشهادات والـauthentication — دايما تحقق.',
-ex:[
-  ['timedatectl','حال الوقت والتوقيت وNTP'],
-  ['timedatectl set-timezone Africa/Casablanca','توقيت المغرب'],
-  ['timedatectl set-timezone Europe/Paris','توقيت باريس'],
-  ['timedatectl set-ntp true','فعّل المزامنة التلقائية'],
-  ['timedatectl list-timezones | grep Africa','توقيتات أفريقيا'],
-  ['date','التاريخ والوقت الحالي'],
-  ['date "+%Y-%m-%d %H:%M:%S"','format مفصّل'],
-  ['date +%F','تاريخ فقط: 2024-01-15'],
-  ['date +%F_%H%M','للأسماء: 2024-01-15_1430'],
-  ['date +%s','Unix timestamp'],
-  ['ntpstat','حال مزامنة NTP'],
-  ['chronyc tracking','حال chrony (RHEL 8+)'],
-],tip:'$(date +%F_%H%M) = أضفها لأسماء ملفات الـbackup تلقائياً',flags:[]},
-
-{c:'sys',icon:'📊',n:'free / df / du',ar:'الذاكرة والمساحة',s:'راقب الرام والديسك — أساس كل تشخيص',
-d:'ثلاثة أوامر مكمّلة لبعض. free = رام، df = مساحة الأقسام، du = حجم المجلدات.',
-ex:[
-  ['free -h','رام + سواب بشكل قابل للقراءة'],
-  ['free -m','بالميغابايت'],
-  ['free -h -s 2','تحديث كل ثانيتين'],
-  ['watch -n 2 free -h','مراقبة مستمرة'],
-  ['df -h','مساحة كل الأقسام'],
-  ['df -h /var','مساحة قسم محدد'],
-  ['df -h | grep -v tmpfs','بدون أقسام tmpfs'],
-  ['df -i','استخدام inodes (مهم مثل المساحة)'],
-  ['du -sh /var/log','الحجم الكلي لمجلد'],
-  ['du -sh /var/log/*','حجم كل عنصر'],
-  ['du -sh /var/log/* | sort -rh | head -10','أكبر 10 عناصر'],
-  ['du -h --max-depth=1 /var','مستوى واحد فقط'],
-],tip:'إذا امتلأ الديسك: du -sh /var/* | sort -rh | head -10 — يحدد السبب',flags:[]},
-
-{c:'sys',icon:'📈',n:'uptime / vmstat / iostat',ar:'أداء النظام',s:'حمل المعالج وأداء الذاكرة والـI/O',
-d:'تشخيص أداء النظام — هل السيرفر محمّل؟ هل الديسك بطيء؟',
-ex:[
-  ['uptime','مدة التشغيل + متوسط الحمل'],
-  ['uptime -p','format بشري: up 3 days, 2 hours'],
-  ['vmstat 2 5','إحصاءات كاملة كل 2 ثانية، 5 مرات'],
-  ['vmstat -s','ملخص إحصائي شامل'],
-  ['iostat -x 1 3','أداء الديسك التفصيلي'],
-  ['iostat -x | grep -v "^$"','بدون أسطر فارغة'],
-  ['sar -u 1 5','استخدام CPU (يحتاج sysstat)'],
-  ['sar -r 1 5','استخدام الذاكرة'],
-  ['sar -b 1 5','I/O stats'],
-  ['dnf install sysstat -y','تثبيت sysstat'],
-],tip:'حمل uptime < عدد المعالجات = OK | أكبر = السيرفر محمّل',flags:[]},
-
-/* ══ FILES ════════════════════════════════════════════════ */
-{c:'files',icon:'📂',n:'ls',ar:'عرض محتوى المجلد',s:'الأكثر استعمالاً — لائحة الملفات بكل تفاصيلها',
-d:'ls البسيطة للعرض السريع، ls -lah للتفاصيل الكاملة — خيارات كثيرة تستحق التعلم.',
-ex:[
-  ['ls -lah','تفاصيل + مخفية + حجم بشري — الأشمل'],
-  ['ls -lt','مرتبة بالتاريخ — الأحدث فوق'],
-  ['ls -ltr','مرتبة بالتاريخ — الأقدم فوق'],
-  ['ls -lS','مرتبة بالحجم — الأكبر فوق'],
-  ['ls -lSr','مرتبة بالحجم — الأصغر فوق'],
-  ['ls -la /etc/','محتوى /etc/ بالكامل'],
-  ['ls -la | grep "^d"','المجلدات فقط'],
-  ['ls -la | grep "^-"','الملفات فقط'],
-  ['ls -la | grep "^l"','الروابط الرمزية فقط'],
-  ['ls -la | grep "^-.*x"','الملفات القابلة للتنفيذ'],
-  ['ls -R /etc/nginx/','عرض متكرر (recursive)'],
-],tip:'ls -ltr مفيدة جداً — الملفات الأحدث في الأسفل',flags:['-l','-a','-h','-t','-r','-S','-R']},
-
-{c:'files',icon:'🔎',n:'find',ar:'البحث القوي عن الملفات',s:'ابحث بأي شرط — اسم، حجم، تاريخ، صلاحيات',
-d:'find = أقوى أداة للبحث. تستطيع تنفيذ أوامر على نتائجها مباشرة.',
-ex:[
-  ['find /var/log -name "*.log"','ابحث بالامتداد'],
-  ['find /etc -name "nginx.conf"','ابحث عن ملف محدد'],
-  ['find / -type f -size +100M 2>/dev/null','ملفات أكبر من 100Mo'],
-  ['find / -type f -size +1G 2>/dev/null','ملفات أكبر من 1Go'],
-  ['find /var/log -mtime -1','تعدّلت في آخر 24 ساعة'],
-  ['find /var/log -mtime +30','أقدم من 30 يوم'],
-  ['find /tmp -atime +7','ما وصلتلها منذ 7 أيام'],
-  ['find / -user root -perm -4000 2>/dev/null','ملفات SUID — أمان'],
-  ['find . -name "*.log" -exec rm -f {} \\;','احذف كل .log وجدتها'],
-  ['find /var/log -name "*.log" | xargs ls -lh','شوف أحجامها'],
-  ['find /etc -name "*.conf" -exec grep -l "listen" {} \\;','ملفات config تحتوي listen'],
-  ['find / -name "*.bak" -delete 2>/dev/null','احذف كل ملفات .bak'],
-],tip:'2>/dev/null ضيفها دايماً مع find لإخفاء أخطاء الصلاحيات',flags:['-name','-type f/d','-size','-mtime','-atime','-user','-perm','-exec','-delete']},
-
-{c:'files',icon:'👁️',n:'cat / less / head / tail',ar:'قراءة الملفات',s:'اعرض محتوى أي ملف — كل أداة لحالة',
-d:'cat للملفات الصغيرة، less للكبيرة، tail للوغات المباشرة، head للبداية.',
-ex:[
-  ['cat fichier.conf','اعرض الملف كامل'],
-  ['cat -n fichier.log','مع أرقام الأسطر'],
-  ['cat -A fichier.conf','اعرض أحرف خاصة (tabs, spaces)'],
-  ['cat /etc/passwd | cut -d: -f1','أسماء المستخدمين فقط'],
-  ['less /var/log/messages','قراءة صفحة صفحة'],
-  ['less +G /var/log/messages','ابدأ من آخر الملف'],
-  ['less +F /var/log/messages','less مع متابعة مباشرة'],
-  ['head -n 20 fichier.log','أول 20 سطر'],
-  ['head -n 1 /etc/passwd','أول سطر فقط'],
-  ['tail -n 100 fichier.log','آخر 100 سطر'],
-  ['tail -f /var/log/messages','متابعة مباشرة ⭐'],
-  ['tail -F /var/log/nginx/error.log','متابعة حتى لو تجدد الملف'],
-  ['tail -fn 200 /var/log/secure','200 سطر ثم متابعة'],
-],tip:'في less: q=خروج | /=بحث | n=التالي | G=النهاية | less +F = الأفضل للـlogs',flags:['-n','-f','-F','less: / بحث | n التالي | G النهاية | q خروج']},
-
-{c:'files',icon:'✂️',n:'cp / mv / rm / mkdir',ar:'نسخ نقل حذف إنشاء',s:'العمليات الأساسية على الملفات والمجلدات',
-d:'أوامر لا غنى عنها — لكن انتبه من rm -rf!',
-ex:[
-  ['cp fichier.conf fichier.conf.bak','نسخة احتياطية قبل التعديل — عادة ذهبية'],
-  ['cp -r /src/dir/ /dest/','نسخ مجلد كامل'],
-  ['cp -p fichier.conf /backup/','مع الحفاظ على الخصائص والتواريخ'],
-  ['cp -a /src/ /dest/','نسخ كامل مع حفظ كل الخصائص'],
-  ['mv ancien.conf nouveau.conf','إعادة تسمية'],
-  ['mv fichier.conf /etc/nginx/','نقل لمجلد آخر'],
-  ['rm fichier.log','حذف ملف'],
-  ['rm -f fichier.log','حذف بالقوة بلا تأكيد'],
-  ['rm -rf /tmp/old_dir/','حذف مجلد كامل — ⚠️ انتبه!'],
-  ['mkdir /app','إنشاء مجلد'],
-  ['mkdir -p /app/logs/2024/01','مجلدات متداخلة دفعة واحدة'],
-  ['touch fichier.txt','إنشاء ملف فارغ أو تحديث تاريخه'],
-  ['touch -t 202401150000 fichier','تعيين تاريخ محدد للملف'],
-],tip:'cp fichier.conf fichier.conf.$(date +%F).bak = عادة لازم تتعلمها',flags:['-r','-p','-a','-f','-i (تأكيد)','-v (verbose)','-p للـmkdir']},
-
-{c:'files',icon:'🔗',n:'ln / stat / file / which',ar:'روابط ومعلومات الملفات',s:'روابط رمزية ومعلومات تفصيلية',
-d:'ln لإنشاء shortcuts، stat لكل تفاصيل الملف، file لمعرفة نوعه.',
-ex:[
-  ['ln -s /etc/nginx/nginx.conf /root/nginx.conf','رابط رمزي'],
-  ['ln -s /data/app-logs /var/log/myapp','ربط مجلد'],
-  ['ls -la | grep "^l"','عرض كل الروابط الرمزية'],
-  ['readlink -f /root/nginx.conf','شوف الملف الأصلي الحقيقي'],
-  ['readlink -e /symlink','تحقق من وجود الهدف'],
-  ['stat fichier.conf','كل تفاصيل الملف (inode, تواريخ, حجم)'],
-  ['file /usr/bin/python3','نوع الملف (binary/script/text)'],
-  ['file /var/log/messages','هل هو text عادي؟'],
-  ['which nginx','أين البرنامج في PATH؟'],
-  ['whereis nginx','الملف + man pages + source'],
-  ['type ls','هل هو alias أم برنامج حقيقي؟'],
-],tip:'stat = معلومات أعمق من ls -l — يعطيك inode وكل التواريخ',flags:['-s','-f','readlink','stat','file','which','whereis']},
-
-/* ══ NETWORK ════════════════════════════════════════════ */
-{c:'net',icon:'🌐',n:'ip',ar:'إدارة الشبكة والإنترفيسات',s:'عرض وتهيئة IPs والتوجيه — بديل ifconfig',
-d:'ip = الأمر الرسمي في RHEL الحديث. يستبدل ifconfig وroute القديمتين.',
-ex:[
-  ['ip a','كل الإنترفيسات + عناوين IP — أكثر استعمالاً'],
-  ['ip addr show eth0','إنترفيس محدد'],
-  ['ip -4 a','IPv4 فقط'],
-  ['ip -6 a','IPv6 فقط'],
-  ['ip -4 a | grep inet','عناوين IP فقط (نظيف)'],
-  ['ip route','جدول التوجيه الكامل'],
-  ['ip route show default','البوابة الافتراضية فقط'],
-  ['ip route get 8.8.8.8','عبر أي إنترفيس سيمر هذا IP؟'],
-  ['ip link set eth0 up','تشغيل إنترفيس'],
-  ['ip link set eth0 down','إيقاف إنترفيس'],
-  ['ip neigh','جدول ARP — عناوين MAC'],
-  ['ip -s link','إحصائيات إرسال/استقبال'],
-  ['ip addr add 192.168.1.100/24 dev eth0','أضف IP مؤقتاً'],
-],tip:'ip -4 a | grep inet = أسرع طريقة لمعرفة عناوين IP السيرفر',flags:['a / addr','route','link','neigh','-4','-6','-s']},
-
-{c:'net',icon:'🔌',n:'ss',ar:'المنافذ والاتصالات الشبكية',s:'بديل netstat الأسرع والأقوى',
-d:'ss = Socket Statistics. أسرع من netstat وأكثر معلومات. أساسي في تشخيص الشبكة.',
-ex:[
-  ['ss -tlnp','TCP ports مفتوحة + العملية المسؤولة'],
-  ['ss -ulnp','UDP ports مفتوحة'],
-  ['ss -tlnp | grep ":80"','من يستمع على port 80؟'],
-  ['ss -tlnp | grep ":443"','من يستمع على HTTPS؟'],
-  ['ss -tlnp | grep ":22"','من يستمع على SSH؟'],
-  ['ss -s','ملخص إحصائيات كل الاتصالات'],
-  ['ss -tnp state ESTABLISHED','الاتصالات النشطة فقط'],
-  ['ss -tnp | grep ESTABLISHED | wc -l','عدد الاتصالات النشطة'],
-  ['ss -tnp | grep "192.168.1.100"','اتصالات من IP محدد'],
-  ['ss -4tlnp','IPv4 فقط'],
-  ['ss -tnp | grep TIME_WAIT | wc -l','عدد اتصالات TIME_WAIT'],
-],tip:'ss -tlnp = أول أمر عند "الخدمة ما عندهاش network" أو "port مشغول"',flags:['-t (TCP)','-u (UDP)','-l (listening)','-n (أرقام بلا أسماء)','-p (عملية)','-s (إحصاء)']},
-
-{c:'net',icon:'📡',n:'ping / traceroute / dig / nmap',ar:'تشخيص الشبكة',s:'تحقق من الاتصال وتتبع المسار وDNS',
-d:'أوامر التشخيص الأساسية — كل مشكلة شبكة تبدأ بهذه الأوامر.',
-ex:[
-  ['ping -c 4 8.8.8.8','اختبار الإنترنت'],
-  ['ping -c 4 192.168.1.1','اختبار البوابة الافتراضية'],
-  ['ping -c 4 -W 1 8.8.8.8','timeout ثانية واحدة'],
-  ['traceroute 8.8.8.8','تتبع المسار hop by hop'],
-  ['traceroute -T -p 80 google.com','traceroute عبر TCP port 80'],
-  ['mtr google.com','traceroute + ping معاً (مباشر)'],
-  ['dig google.com','DNS lookup'],
-  ['dig @8.8.8.8 google.com','DNS عبر سيرفر محدد'],
-  ['dig google.com +short','IP فقط'],
-  ['dig -x 8.8.8.8','Reverse DNS lookup'],
-  ['nslookup google.com','DNS بسيط'],
-  ['host google.com','DNS سريع'],
-  ['nc -zv 192.168.1.1 80','اختبار اتصال TCP بـport محدد'],
-],tip:'mtr = traceroute ديناميكي — أفضل أداة لتشخيص مشاكل الشبكة',flags:['-c (عدد)','-W (timeout)','dig +short','-x (reverse)']},
-
-{c:'net',icon:'🌊',n:'curl',ar:'طلبات HTTP وAPI',s:'اختبر APIs ونزّل ملفات وتحقق من خدمات الويب',
-d:'curl = أقوى أداة HTTP في CLI. من اختبار بسيط لـAPI معقد مع headers.',
-ex:[
-  ['curl https://example.com','GET بسيط'],
-  ['curl -I https://example.com','Headers فقط — اختبار سريع'],
-  ['curl -Lv https://example.com','مع redirects وتفاصيل'],
-  ['curl -o /tmp/file.tar.gz https://url/file.tar.gz','تنزيل ملف'],
-  ['curl -X POST -H "Content-Type: application/json" -d \'{"key":"val"}\' https://api.com','POST JSON'],
-  ['curl -H "Authorization: Bearer TOKEN" https://api.com/v1/data','مع Bearer token'],
-  ['curl -u user:pass https://api.com/data','Basic auth'],
-  ['curl -sk https://localhost:8443/health','HTTPS بلا تحقق من cert'],
-  ['curl -w "%{http_code}\\n" -o /dev/null -s https://example.com','كود HTTP فقط'],
-  ['curl -w "@curl-format.txt" -o /dev/null -s https://example.com','timing مفصّل'],
-  ['curl -v https://example.com 2>&1 | grep -iE "< HTTP|ssl|cert"','تفاصيل TLS'],
-  ['curl --retry 3 --retry-delay 2 https://example.com','إعادة المحاولة'],
-],tip:'curl -w "%{http_code}" -o /dev/null -s URL = اختبار سريع جداً لأي خدمة',flags:['-I','-L','-o','-X','-H','-d','-u','-s (صامت)','-k (بلا cert)','-v (verbose)','-w']},
-
-{c:'net',icon:'🔥',n:'firewall-cmd',ar:'الجدار الناري firewalld',s:'افتح وأغلق ports — --permanent لازم!',
-d:'firewalld = الجدار الناري الافتراضي في RHEL. --permanent مهمة وإلا يضيع بعد restart.',
-ex:[
-  ['firewall-cmd --state','هل firewalld شغال؟'],
-  ['firewall-cmd --list-all','كل القواعد الفعالة (أهم أمر)'],
-  ['firewall-cmd --list-ports','المنافذ المفتوحة فقط'],
-  ['firewall-cmd --list-services','الخدمات المسموح بها'],
-  ['firewall-cmd --add-port=8080/tcp --permanent','افتح port — دائم'],
-  ['firewall-cmd --remove-port=8080/tcp --permanent','أغلق port — دائم'],
-  ['firewall-cmd --add-service=http --permanent','افتح HTTP (port 80)'],
-  ['firewall-cmd --add-service=https --permanent','افتح HTTPS (port 443)'],
-  ['firewall-cmd --add-service=ssh --permanent','تأكد من فتح SSH'],
-  ['firewall-cmd --remove-service=http --permanent','أغلق HTTP'],
-  ['firewall-cmd --reload','⚠️ طبّق التغييرات الدائمة — لازم بعد --permanent'],
-  ['firewall-cmd --get-active-zones','الـzones الفعالة'],
-  ['firewall-cmd --zone=public --list-all','قواعد zone محدد'],
-  ['firewall-cmd --add-rich-rule=\'rule family="ipv4" source address="1.2.3.4" drop\' --permanent','حجب IP'],
-],tip:'--permanent لازم + --reload لتطبيقه. بلا --permanent يضيع عند restart',flags:['--permanent','--reload','--add-port','--remove-port','--add-service','--list-all','--state']},
-
-{c:'net',icon:'🔧',n:'nmcli / nmtui',ar:'NetworkManager',s:'إدارة الاتصالات الشبكية',
-d:'nmcli = CLI لـNetworkManager. nmtui = نسخة TUI (بواجهة نصية بسيطة).',
-ex:[
-  ['nmcli device status','حال كل الإنترفيسات'],
-  ['nmcli device show eth0','تفاصيل إنترفيس محدد'],
-  ['nmcli connection show','كل الاتصالات المتاحة'],
-  ['nmcli connection show --active','الاتصالات النشطة فقط'],
-  ['nmcli device connect eth0','تشغيل إنترفيس'],
-  ['nmcli connection up "Wired Connection"','تفعيل اتصال'],
-  ['nmcli connection down "Wired Connection"','إيقاف اتصال'],
-  ['nmcli connection reload','إعادة تحميل الإعدادات'],
-  ['nmcli general','معلومات عامة'],
-  ['nmtui','واجهة رسومية نصية — أسهل للإعداد'],
-],tip:'nmtui = أسهل طريقة لتعديل إعدادات الشبكة عبر واجهة نصية',flags:['device','connection','show','up','down','connect','reload']},
-
-/* ══ LOGS ════════════════════════════════════════════════ */
-{c:'log',icon:'📋',n:'أهم ملفات logs في RHEL',ar:'أين تلقى اللوغات؟',s:'الخريطة الكاملة لملفات logs',
-d:'معرفة أين توجد logs = نصف التشخيص. هذه أهم الملفات في أي سيرفر RHEL.',
-ex:[
-  ['/var/log/messages','logs النظام العامة — الأهم'],
-  ['/var/log/secure','مصادقة + SSH + sudo + su'],
-  ['/var/log/cron','مهام cron المجدولة'],
-  ['/var/log/boot.log','رسائل الإقلاع'],
-  ['/var/log/dmesg','رسائل الكيرنيل'],
-  ['/var/log/httpd/access_log','Apache: كل الطلبات'],
-  ['/var/log/httpd/error_log','Apache: الأخطاء'],
-  ['/var/log/nginx/access.log','Nginx: كل الطلبات'],
-  ['/var/log/nginx/error.log','Nginx: الأخطاء'],
-  ['/var/log/audit/audit.log','SELinux + Audit — حساس'],
-  ['/var/log/maillog','خدمات البريد'],
-  ['/var/log/dnf.log','تاريخ تثبيت الحزم'],
-  ['/var/log/firewalld','logs الجدار الناري'],
-],tip:'في RHEL 8+: journalctl -u SERVICE أقوى وأسهل من الملفات المباشرة',flags:[]},
-
-{c:'log',icon:'👁️',n:'tail -f',ar:'متابعة logs مباشرة',s:'الأمر الأكثر استعمالاً في أي مشن',
-d:'tail -f = تابع logs وهي تُكتب. مع grep تصبح أداة تشخيص قوية جداً.',
-ex:[
-  ['tail -f /var/log/messages','logs النظام مباشرة'],
-  ['tail -f /var/log/secure','SSH + sudo + auth مباشرة'],
-  ['tail -f /var/log/nginx/error.log','أخطاء nginx مباشرة'],
-  ['tail -f /var/log/httpd/error_log','أخطاء Apache مباشرة'],
-  ['tail -fn 200 /var/log/messages','200 سطر ثم متابعة'],
-  ['tail -f /var/log/messages | grep -i error','فيلتر مباشر'],
-  ['tail -f /var/log/messages | grep -iE "error|warn|crit|fail"','كل المشاكل'],
-  ['tail -f /var/log/messages | grep -v kernel','بدون رسائل kernel'],
-  ['tail -f /var/log/nginx/access.log | awk \'{print $1,$7,$9}\'','IP + URL + كود HTTP'],
-  ['tail -f /var/log/nginx/access.log | grep " 5[0-9][0-9] "','أخطاء 5xx فقط'],
-  ['tail -F /var/log/app.log','حتى لو الملف تجدد أو حُذف وأُعيد إنشاؤه'],
-],tip:'tail -f ... | grep -iE "error|fail|warn" = الـcombo الذهبي في كل مشن',flags:['-f','-F (يتابع حتى لو تجدد الملف)','-n']},
-
-{c:'log',icon:'🔩',n:'dmesg',ar:'رسائل الكيرنيل',s:'تشخيص مشاكل الهاردوير والكيرنيل',
-d:'dmesg = رسائل مباشرة من الكيرنيل. مفيد لمشاكل الديسك والذاكرة والشبكة.',
-ex:[
-  ['dmesg | tail -30','آخر 30 رسالة'],
-  ['dmesg -T','مع تاريخ قابل للقراءة البشرية'],
-  ['dmesg -T | grep -i error','الأخطاء فقط'],
-  ['dmesg -T | grep -i warn','التحذيرات فقط'],
-  ['dmesg -T | grep -iE "sda|sdb|nvme|disk"','مشاكل الديسك'],
-  ['dmesg -T | grep -iE "oom|out of memory"','مشاكل نقص الذاكرة — خطير'],
-  ['dmesg -T | grep -iE "eth|eno|bond|link"','مشاكل الشبكة'],
-  ['dmesg -T | grep -i "call trace"','stack traces — أخطاء kernel'],
-  ['dmesg --level=err,warn','أخطاء وتحذيرات فقط'],
-  ['dmesg -T -w','متابعة مباشرة (مثل tail -f)'],
-],tip:'dmesg -T | grep -iE "error|warn|oom" = تشخيص سريع لكل مشاكل الهاردوير',flags:['-T','-H','--level','-w (follow)']},
-
-{c:'log',icon:'📅',n:'ausearch / aureport',ar:'logs الـAudit والأمان',s:'تحليل SELinux والأحداث الأمنية',
-d:'ausearch = البحث في audit log. aureport = تقارير مُلخّصة. مهمان للأمان والـSELinux.',
-ex:[
-  ['ausearch -m avc -ts today','مشاكل SELinux اليوم'],
-  ['ausearch -m avc -ts recent','آخر 10 دقائق'],
-  ['ausearch -m avc -c httpd','مشاكل SELinux لـhttpd'],
-  ['ausearch -m avc -c nginx','مشاكل SELinux لـnginx'],
-  ['ausearch -ui 1000 -ts today','أحداث مستخدم (UID 1000) اليوم'],
-  ['ausearch -m USER_LOGIN -ts today','تسجيلات الدخول اليوم'],
-  ['ausearch -k auth','أحداث المصادقة'],
-  ['aureport --summary','ملخص شامل لكل الأحداث'],
-  ['aureport -au','محاولات المصادقة'],
-  ['aureport -f','الملفات التي وُصل إليها'],
-  ['aureport -u','الأحداث حسب المستخدم'],
-],tip:'ausearch -m avc -ts today = أول شيء تشوف عند أي مشكلة SELinux',flags:['-m (نوع)','-ts (من متى)','-c (عملية)','-ui (UID)','--summary']},
-
-/* ══ GREP ═════════════════════════════════════════════ */
-{c:'grep',icon:'🔍',n:'grep',ar:'البحث والتصفية — الأساسي',s:'ابحث عن نص في الملفات أو في تدفق البيانات',
-d:'grep = أهم أداة لتصفية logs. لازم تعرف خياراته جيداً — -i و-v و-E الأساسيين.',
-ex:[
-  ['grep "ERROR" /var/log/messages','ابحث عن كلمة'],
-  ['grep -i "error" /var/log/messages','بلا اعتبار للحجم (Case insensitive)'],
-  ['grep -n "error" fichier.log','مع رقم السطر'],
-  ['grep -c "error" fichier.log','عدد الأسطر المطابقة فقط'],
-  ['grep -v "DEBUG" fichier.log','اعرض كل شيء ماعدا DEBUG'],
-  ['grep -r "ServerName" /etc/httpd/','ابحث في كل ملفات مجلد'],
-  ['grep -l "listen" /etc/nginx/conf.d/*','أسماء الملفات اللي تحتوي listen'],
-  ['grep -w "root" /etc/passwd','الكلمة الكاملة فقط — ليس rootuser'],
-  ['grep -A 5 "ERROR" app.log','5 أسطر بعد كل نتيجة'],
-  ['grep -B 5 "ERROR" app.log','5 أسطر قبل كل نتيجة'],
-  ['grep -C 5 "ERROR" app.log','5 أسطر قبل وبعد — الأكثر مفيدة'],
-  ['grep -m 10 "error" fichier.log','أول 10 نتائج فقط'],
-  ['grep -h "error" *.log','بدون اسم الملف في النتيجة'],
-],tip:'-C 5 = تقرأ السياق كامل. -v = تعكس النتائج. -i = تتجاهل الحجم',flags:['-i','-n','-c','-v','-r','-l','-w','-A n','-B n','-C n','-m n','-h']},
-
-{c:'grep',icon:'🎯',n:'grep -E (Regex)',ar:'البحث بالعبارات النظامية',s:'قوة grep الحقيقية — أنماط متقدمة',
-d:'Regex = طريقة للبحث بأنماط. تعلّم الأساسيات تفتح لك عالم التحليل.',
-ex:[
-  ['grep -E "ERROR|WARN|CRIT" fichier.log','OR بين كلمات — الأكثر استعمالاً'],
-  ['grep -iE "error|exception|fatal|critical|fail" app.log','كل أنواع الأخطاء'],
-  ['grep -E "^2024-01" fichier.log','يبدأ بـ2024-01'],
-  ['grep -E "failed.*(password|auth)" /var/log/secure','نمطين معاً'],
-  ['grep -oE "[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+" access.log','استخرج IPs فقط'],
-  ['grep -oE "HTTP/[0-9]\\.[0-9]\\" [0-9]+" access.log','استخرج كودات HTTP'],
-  ['grep -E "[0-9]{1,3}(\\.[0-9]{1,3}){3}" log.txt','ابحث عن IPs'],
-  ['grep -v -E "^(#|$|\\s*$)" /etc/nginx/nginx.conf','config نظيف — بلا تعليقات وأسطر فارغة'],
-  ['grep -P "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}" fichier.log','timestamp كامل (Perl regex)'],
-  ['grep -oP "(?<=user=)\\w+" auth.log','استخرج قيمة بعد user='],
-],tip:'grep -v -E "^(#|\\s*$)" file = أفضل طريقة لقراءة config بنظافة',flags:['-E (ERE)','| = OR','^= بداية','$=نهاية','\\d=رقم','-o (المطابق فقط)','-P (Perl regex)']},
-
-{c:'grep',icon:'⚗️',n:'awk',ar:'معالجة وتحليل البيانات',s:'استخرج أعمدة محددة وحلّل البيانات',
-d:'awk = مكمّل grep. تستطيع استخراج أعمدة، فرز، حساب، وتصفية بشروط.',
-ex:[
-  ['awk \'{print $1}\' /var/log/nginx/access.log','العمود الأول (عناوين IP)'],
-  ['awk \'{print $1,$7,$9}\' access.log','IP + URL + كود HTTP'],
-  ['awk -F: \'{print $1}\' /etc/passwd','الفاصل : — أسماء المستخدمين'],
-  ['awk -F: \'{print $1,$3,$7}\' /etc/passwd','اسم + UID + Shell'],
-  ['awk \'{print $NF}\' fichier.log','آخر عمود'],
-  ['awk \'{print $(NF-1)}\' fichier.log','العمود قبل الأخير'],
-  ['awk \'/ERROR/{print}\' fichier.log','أسطر تحتوي ERROR'],
-  ['awk \'$9 == 404 {print $1,$7}\' access.log','IP + URL عند كود 404'],
-  ['awk \'$9 >= 500 {print $1,$9,$7}\' access.log','أخطاء 5xx مع IP والـURL'],
-  ['df -h | awk \'NR>1 {print $5,$6}\'','نسبة الامتلاء + القسم'],
-  ['awk \'NR>=10 && NR<=20\' fichier.log','الأسطر 10 إلى 20'],
-  ['awk \'END{print NR " سطر"}\' fichier.log','عدد أسطر الملف'],
-],tip:'awk \'$9>=500{print $1,$9,$7}\' access.log = تحليل أخطاء 5xx في ثانية',flags:['-F (الفاصل)','$1..$NF','NR (رقم السطر)','NF (عدد الأعمدة)','END{}']},
-
-{c:'grep',icon:'✏️',n:'sed',ar:'تعديل النصوص',s:'استبدل واحذف واستخرج — بدون فتح الملف',
-d:'sed = Stream EDitor. يعدّل النص وهو يمر — قوي في الأتمتة.',
-ex:[
-  ['sed -n "10,20p" fichier.log','اعرض الأسطر 10 إلى 20'],
-  ['sed \'s/ERROR/[ERROR]/g\' fichier.log','استبدل كل ERROR'],
-  ['sed -i \'s/old_value/new_value/g\' fichier.conf','استبدل مباشرة في الملف'],
-  ['sed -i.bak \'s/old/new/g\' fichier.conf','استبدل مع نسخة احتياطية .bak تلقائياً'],
-  ['sed \'/DEBUG/d\' fichier.log','احذف أسطر DEBUG'],
-  ['sed \'/^#/d; /^$/d\' fichier.conf','احذف التعليقات والأسطر الفارغة'],
-  ['sed -n \'/START/,/END/p\' fichier.log','اعرض من START إلى END'],
-  ['sed \'s/password=.*/password=***/g\' config','أخفِ كلمات المرور'],
-  ['sed -n "/2024-01-15/p" app.log','أسطر تاريخ محدد'],
-  ['sed "1d" fichier.csv','احذف السطر الأول (header)'],
-],tip:'sed -i.bak = عادة ذهبية — تعدّل وتحتفظ بنسخة .bak تلقائياً',flags:['-n (صامت)','-i (مباشر)','-i.bak','s/old/new/g','d (حذف)','p (طباعة)']},
-
-{c:'grep',icon:'🧮',n:'sort / uniq / wc / cut',ar:'العد والتحليل الإحصائي',s:'عدّ الأحداث ورتّب وحلّل logs',
-d:'هذه الأوامر الأربعة معاً = تحليل قوي للـlogs بدون أدوات خارجية.',
-ex:[
-  ['grep "ERROR" app.log | wc -l','عدد الأخطاء الكلي'],
-  ['cat access.log | wc -l','عدد الطلبات الكلي'],
-  ['cat fichier.log | sort | uniq -c | sort -rn | head -20','الأكثر تكراراً'],
-  ['cat access.log | awk \'{print $1}\' | sort | uniq -c | sort -rn | head -20','أكثر 20 IP طلباً'],
-  ['grep "Failed password" /var/log/secure | awk \'{print $11}\' | sort | uniq -c | sort -rn | head -10','أكثر IPs هجوماً على SSH'],
-  ['awk \'{print $9}\' access.log | sort | uniq -c | sort -rn','توزيع كودات HTTP'],
-  ['grep "404" access.log | awk \'{print $7}\' | sort | uniq -c | sort -rn | head -10','أكثر URLs بـ404'],
-  ['cut -d" " -f1 access.log | sort | uniq -c | sort -rn','IPs بطريقة cut'],
-  ['awk \'{print $7}\' access.log | sort | uniq -c | sort -rn | head -20','أكثر URLs طلباً'],
-],tip:'sort | uniq -c | sort -rn = الـcombo الذهبي لكل تحليل logs',flags:['wc -l','sort -rn (ترتيب عكسي رقمي)','uniq -c (مع العد)','cut -d (فاصل) -f (عمود)']},
-
-/* ══ REDIRECTION ══════════════════════════════════════ */
-{c:'redir',icon:'➡️',n:'التوجيه > و >>',ar:'حفظ النتائج في ملفات',s:'وجّه أي نتيجة لملف',
-d:'> = اكتب (يمسح القديم). >> = أضف في الآخر. أساسيان في كل script.',
-ex:[
-  ['commande > fichier.txt','اكتب في الملف — يمسح القديم'],
-  ['commande >> fichier.txt','أضف في آخر الملف (append)'],
-  ['grep "ERROR" app.log > /tmp/erreurs.txt','احفظ الأخطاء'],
-  ['grep -i error /var/log/messages >> /root/errors_$(date +%F).txt','ملف يومي بالتاريخ'],
-  ['df -h > /tmp/disk_$(date +%F_%H%M).txt','snapshot المساحة مع تاريخ ووقت'],
-  ['journalctl -u nginx --no-pager > /tmp/nginx_all.txt','احفظ كل logs nginx'],
-  ['ss -tlnp > /tmp/ports_$(date +%F).txt','snapshot المنافذ المفتوحة'],
-  ['echo "$(date): تم الـbackup" >> /var/log/backup.log','أضف سجل للـlog'],
-  ['{ echo "=== $(date) ==="; df -h; free -h; } >> /tmp/report.txt','تقرير مع عنوان'],
-],tip:'$(date +%F_%H%M) = طريقة احترافية لأسماء الملفات: 2024-01-15_1430',flags:['> (اكتب)','>> (أضف)','$(date +%F)']},
-
-{c:'redir',icon:'❌',n:'stderr: 2> و 2>&1',ar:'توجيه رسائل الخطأ',s:'stdout=1 و stderr=2 — تحكم فيهما',
-d:'stdout (1) = النتائج العادية. stderr (2) = رسائل الخطأ. مهمان في scripts.',
-ex:[
-  ['commande 2> erreurs.txt','وجّه الأخطاء لملف'],
-  ['commande 2>> erreurs.txt','أضف الأخطاء للملف'],
-  ['commande > sortie.txt 2>&1','stdout + stderr في نفس الملف — الأكثر استعمالاً'],
-  ['commande > /dev/null 2>&1','صمت تام — اخفِ كل شيء'],
-  ['commande > sortie.txt 2> erreurs.txt','افصل stdout وstderr في ملفين'],
-  ['find / -name "*.log" 2>/dev/null > resultats.txt','تجاهل أخطاء الصلاحيات'],
-  ['script.sh > /tmp/out_$(date +%F).txt 2>&1','احفظ كل مخرجات script'],
-  ['grep "pattern" *.log 2>/dev/null','تجاهل "الملف غير موجود"'],
-  ['commande 2>&1 | grep -i error','وجّه stderr لـstdout ثم صفّي'],
-],tip:'> /tmp/out.txt 2>&1 = أضفها لكل cron job لحفظ النتائج والأخطاء',flags:['2> (stderr)','2>&1 (دمج مع stdout)','1> أو > (stdout)','/dev/null (سلة المهملات)']},
-
-{c:'redir',icon:'🔗',n:'Pipe | و tee',ar:'تسلسل الأوامر',s:'وصّل الأوامر ببعض — أقوى تقنية في CLI',
-d:'pipe | = أرسل نتيجة أمر لأمر آخر. tee = اعرض واحفظ في آن واحد.',
-ex:[
-  ['commande1 | commande2 | commande3','سلسلة أوامر كاملة'],
-  ['tail -f /var/log/messages | grep ERROR','راقب الأخطاء مباشرة'],
-  ['cat access.log | grep "404" | awk \'{print $1}\' | sort | uniq -c | sort -rn','pipeline تحليل كامل'],
-  ['ps aux | grep nginx | grep -v grep','ابحث عن عملية بدقة (بلا سطر grep نفسه)'],
-  ['df -h | grep -v tmpfs | awk \'NR>1{print $5,$6}\' | sort -rn','أقسام مرتبة بالامتلاء'],
-  ['commande | tee fichier.txt','اعرض على الشاشة واحفظ في نفس الوقت'],
-  ['commande | tee -a fichier.txt','اعرض وأضف للملف'],
-  ['tail -f app.log | grep ERROR | tee /tmp/live_errors.txt','راقب واحفظ الأخطاء'],
-  ['journalctl -u nginx | tee /tmp/all_logs.txt | grep -i error','احفظ الكل وصفّي على الشاشة'],
-  ['df -h | tee /tmp/disk_$(date +%F).txt','snapshot مع عرض'],
-],tip:'tee = الأداة المثالية — تشوف النتيجة على الشاشة وتحفظها في الملف',flags:['| (pipe)','tee','-a (append)']},
-
-{c:'redir',icon:'📤',n:'xargs',ar:'تمرير النتائج كمعاملات',s:'استعمل نتيجة أمر كـinput لأمر آخر',
-d:'xargs = يحوّل stdout لمعاملات. قوي جداً مع find.',
-ex:[
-  ['find /var/log -name "*.old" | xargs rm -f','احذف ملفات قديمة بالجملة'],
-  ['find /var/log -name "*.log" | xargs ls -lh','شوف أحجامها'],
-  ['find . -name "*.conf" | xargs grep -l "listen"','ابحث في الملفات اللي وجدتها find'],
-  ['echo "nginx httpd mariadb" | xargs -n1 systemctl status','تحقق من عدة خدمات'],
-  ['cat liste.txt | xargs -n1 ping -c1','ping لكل IP في الملف'],
-  ['find / -name "core.*" 2>/dev/null | xargs -r rm -f','احذف core dumps'],
-  ['find . -name "*.log" | xargs wc -l','عدد أسطر كل ملف log'],
-],tip:'xargs -n1 = معامل واحد كل مرة | find ... | xargs rm = أسرع طريقة للحذف',flags:['-n1 (معامل واحد)','-I{} (مكان الاستبدال)','-r (لا تنفذ لو فارغ)']},
-
-/* ══ PACKAGES ════════════════════════════════════════ */
-{c:'pkg',icon:'📦',n:'dnf',ar:'مدير الحزم الأساسي — RHEL 8+',s:'تثبيت تحديث وحذف الحزم',
-d:'dnf = DNF5 في RHEL 10, DNF4 في RHEL 8-9. يستبدل yum. يحل التبعيات تلقائياً.',
-ex:[
-  ['dnf install nginx','تثبيت حزمة'],
-  ['dnf install nginx httpd git vim -y','تثبيت عدة حزم بلا تأكيد'],
-  ['dnf remove nginx','حذف حزمة'],
-  ['dnf remove nginx --nodeps','حذف بلا اعتبار للتبعيات'],
-  ['dnf update','تحديث كل الحزم'],
-  ['dnf update nginx','تحديث حزمة محددة'],
-  ['dnf check-update','شوف المتاح للتحديث بلا تثبيت'],
-  ['dnf search java','ابحث عن حزمة'],
-  ['dnf search all java | grep -i jdk','بحث شامل'],
-  ['dnf info nginx','معلومات تفصيلية'],
-  ['dnf list installed','كل الحزم المثبتة'],
-  ['dnf list installed | grep java','ابحث في المثبتة'],
-  ['dnf history','تاريخ كل العمليات'],
-  ['dnf history info 5','تفاصيل عملية رقم 5'],
-  ['dnf history undo 5','تراجع عن عملية — مفيد جداً!'],
-  ['dnf provides /usr/bin/curl','أي حزمة وفّرت هذا الملف؟'],
-  ['dnf provides "*/nginx.conf"','أي حزمة تحتوي هذا الملف؟'],
-  ['dnf repolist','المستودعات الفعالة'],
-  ['dnf repolist all','كل المستودعات (فعالة وغير فعالة)'],
-  ['dnf clean all','مسح الكاش كامل'],
-  ['dnf autoremove','احذف الحزم غير المستخدمة'],
-  ['dnf grouplist','مجموعات الحزم المتاحة'],
-  ['dnf groupinstall "Development Tools"','تثبيت مجموعة حزم'],
-],tip:'dnf history undo N = ميزة نادرة تتراجع عن تثبيت/حذف بالكامل',flags:['install','remove','update','search','info','list','history','provides','repolist','clean','autoremove']},
-
-{c:'pkg',icon:'🔩',n:'rpm',ar:'حزم RPM — المستوى المنخفض',s:'استعلام وتحقق وتثبيت .rpm محلياً',
-d:'rpm = المستوى الأدنى من dnf. بلا حل تبعيات — لكن ممتاز للاستعلام.',
-ex:[
-  ['rpm -qa','كل الحزم المثبتة'],
-  ['rpm -qa | grep -i nginx','ابحث في المثبتة'],
-  ['rpm -qa | wc -l','كم حزمة مثبتة؟'],
-  ['rpm -qi nginx','معلومات تفصيلية: إصدار، تاريخ التثبيت، الوصف'],
-  ['rpm -ql nginx','كل الملفات اللي ثبّتتها الحزمة'],
-  ['rpm -qlc nginx','ملفات الإعداد فقط'],
-  ['rpm -qld nginx','ملفات التوثيق فقط'],
-  ['rpm -qf /usr/bin/curl','أي حزمة ثبّتت هذا الملف؟ — السؤال الذهبي'],
-  ['rpm -qf /etc/nginx/nginx.conf','أي حزمة وفّرت هذا config؟'],
-  ['rpm -ivh paquet.rpm','تثبيت .rpm محلي'],
-  ['rpm -Uvh paquet.rpm','تحديث .rpm محلي'],
-  ['rpm -e nginx','حذف حزمة'],
-  ['rpm --verify nginx','تحقق من سلامة الملفات (هل تعدّلت؟)'],
-  ['rpm -qa --last | head -10','آخر 10 حزم مثبتة'],
-  ['rpm -qa --queryformat "%{INSTALLTIME:date} %{NAME}\n" | sort','مرتبة بتاريخ التثبيت'],
-],tip:'rpm -qf /path/to/file = "من ثبّت هذا الملف؟" — سؤال تستعمله يومياً',flags:['-qa','-qi','-ql','-qlc (config)','-qld (docs)','-qf','-ivh','-Uvh','-e','--verify','--last']},
-
-{c:'pkg',icon:'🏗️',n:'yum / dnf config-manager',ar:'إدارة المستودعات',s:'أضف وفعّل وعطّل المستودعات',
-d:'إدارة المستودعات (repos) — إضافة EPEL والمستودعات الخارجية.',
-ex:[
-  ['dnf config-manager --enable epel','فعّل مستودع EPEL'],
-  ['dnf config-manager --disable epel','عطّل مستودع'],
-  ['dnf config-manager --add-repo https://...','أضف مستودع جديد'],
-  ['ls /etc/yum.repos.d/','ملفات المستودعات'],
-  ['cat /etc/yum.repos.d/redhat.repo','إعدادات مستودع محدد'],
-  ['dnf repolist --enabled','المستودعات الفعالة'],
-  ['dnf repolist --disabled','المستودعات المعطلة'],
-  ['rpm --import https://...','استيراد GPG key'],
-  ['dnf install epel-release -y','تثبيت EPEL على RHEL'],
-  ['subscription-manager repos --list','مستودعات Red Hat Subscription'],
-  ['subscription-manager repos --enable=...','تفعيل مستودع Red Hat'],
-],tip:'EPEL = أهم مستودع خارجي يحتوي حزم مثل htop و net-tools وغيرها',flags:['--enable','--disable','--add-repo']},
-
-/* ══ PROCESSES ════════════════════════════════════════ */
-{c:'proc',icon:'⚡',n:'ps',ar:'قائمة العمليات الجارية',s:'شوف كل العمليات النشطة',
-d:'ps = Process Status. أساسي لمعرفة ما يجري في النظام.',
-ex:[
-  ['ps aux','كل العمليات — BSD format — الأكثر استعمالاً'],
-  ['ps -ef','كل العمليات — UNIX format'],
-  ['ps aux | grep nginx','ابحث عن عملية'],
-  ['ps aux | grep -v grep | grep nginx','بدون سطر grep نفسه'],
-  ['ps aux --sort=-%mem | head -10','أكثر 10 استهلاكاً للرام'],
-  ['ps aux --sort=-%cpu | head -10','أكثر 10 استهلاكاً للمعالج'],
-  ['ps aux --sort=-%mem | head -10 | awk \'{print $1,$2,$3,$4,$11}\'','نظيف ومرتّب'],
-  ['ps -ef --forest','شجرة العمليات — رؤية التبعيات'],
-  ['ps -ef -u nginx','عمليات مستخدم محدد'],
-  ['ps -p 1234 -o pid,ppid,cmd,%mem,%cpu,etime','معلومات PID محدد'],
-  ['ps axo pid,ppid,user,cmd | grep httpd','معلومات مخصصة'],
-],tip:'ps aux | grep -v grep | grep PROCESS = الطريقة الصحيحة للبحث عن عملية',flags:['aux','-ef','--sort=-%mem','--sort=-%cpu','--forest','-u','-p','-o']},
-
-{c:'proc',icon:'📊',n:'top / htop',ar:'مراقبة النظام مباشرة',s:'CPU وRAM في الوقت الحقيقي',
-d:'top = مدمج في النظام دايماً. htop = أحسن وأسهل لكن يحتاج تثبيت.',
-ex:[
-  ['top','المراقب الأساسي'],
-  ['top -u nginx','عمليات مستخدم محدد'],
-  ['top -p 1234','راقب PID محدد'],
-  ['top -p 1234,5678','راقب عدة PIDs'],
-  ['top -b -n 1','snapshot واحد — مفيد في scripts'],
-  ['top -b -n 1 > /tmp/top_$(date +%F_%H%M).txt','احفظ snapshot'],
-  ['top -b -n 1 | head -20','ملخص سريع'],
-  ['htop','أفضل — ألوان + بحث + kill سهل'],
-  ['htop -u nginx','عمليات مستخدم محدد'],
-  ['dnf install htop -y','تثبيت htop'],
-],tip:'في top: M=رتب بالرام | P=بالMعالج | k=kill | 1=أعمدة CPU | q=خروج',flags:['top: q=خروج','k=kill','M=RAM','P=CPU','1=CPUs','htop: F3=بحث','F9=kill']},
-
-{c:'proc',icon:'🔪',n:'kill / pkill / killall',ar:'إيقاف العمليات',s:'أرسل إشارات للعمليات',
-d:'kill = بالPID، pkill = بالاسم أو النمط، killall = بالاسم. -9 = إيقاف قسري.',
-ex:[
-  ['kill 1234','إيقاف عادي SIGTERM — يعطي وقت للإغلاق الآمن'],
-  ['kill -9 1234','إيقاف قسري SIGKILL — فوري بلا رحمة'],
-  ['kill -15 1234','SIGTERM = نفس kill بدون رقم'],
-  ['kill -HUP 1234','إعادة تحميل الإعداد — مثل reload'],
-  ['kill -STOP 1234','إيقاف مؤقت (pause)'],
-  ['kill -CONT 1234','استئناف عملية موقوفة'],
-  ['kill $(cat /var/run/nginx.pid)','اقتل من ملف PID'],
-  ['kill -0 1234','تحقق من وجود العملية (بلا قتل)'],
-  ['killall nginx','اقتل كل عمليات nginx بالاسم'],
-  ['pkill -f "python script.py"','اقتل بنمط الأمر الكامل'],
-  ['pkill -u john','اقتل كل عمليات مستخدم'],
-  ['pkill -HUP nginx','أرسل HUP لكل عمليات nginx'],
-  ['pkill -9 -u john','اقتل كل عمليات مستخدم بالقوة'],
-],tip:'جرب kill عادي أولاً. -9 فقط عند الضرورة — لا يعطي وقت للحفظ',flags:['-9 (KILL)','-15 (TERM)','-HUP (reload)','-STOP','-CONT','-0 (تحقق)']},
-
-{c:'proc',icon:'🔬',n:'lsof / strace / pstree',ar:'تشخيص العمليات المتقدم',s:'ملفات مفتوحة وsyscalls وشجرة',
-d:'الأدوات المتقدمة للتشخيص — عند عدم فهم سبب المشكلة.',
-ex:[
-  ['lsof -i :80','من يستخدم port 80؟'],
-  ['lsof -i :443','من يستخدم port 443؟'],
-  ['lsof -p 1234','كل الملفات والاتصالات المفتوحة لـPID'],
-  ['lsof -u root | wc -l','عدد ملفات مفتوحة بواسطة root'],
-  ['lsof /var/log/messages','من يستخدم هذا الملف الآن؟'],
-  ['lsof +D /var/www/html','كل ما مفتوح في هذا المجلد'],
-  ['lsof -i TCP -n','كل اتصالات TCP'],
-  ['strace -p 1234','تتبع syscalls عملية حالية'],
-  ['strace -p 1234 -e trace=open,read,write','syscalls محددة فقط'],
-  ['strace -c nginx -t /tmp/test.html','إحصاءات syscalls'],
-  ['pstree -p','شجرة العمليات مع PIDs'],
-  ['pstree -u','شجرة مع المستخدمين'],
-  ['pstree -p $(pgrep nginx)','شجرة عملية محددة'],
-],tip:'lsof -i :PORT = أسرع طريقة لمعرفة من يستخدم أي port',flags:['lsof -i','lsof -p','+D','strace -p','-e trace=','pstree -p']},
-
-/* ══ USERS ════════════════════════════════════════════ */
-{c:'user',icon:'👤',n:'useradd / usermod / userdel',ar:'إدارة المستخدمين',s:'إنشاء وتعديل وحذف الحسابات',
-d:'إدارة المستخدمين في RHEL — مهمة للخدمات والأمان.',
-ex:[
-  ['useradd -m -s /bin/bash john','إنشاء مستخدم مع home وbash'],
-  ['useradd -r -s /sbin/nologin appuser','مستخدم نظام — لا يسجل دخول (للخدمات)'],
-  ['useradd -u 1050 -g developers john','UID وgroup محددين'],
-  ['passwd john','تعيين أو تغيير كلمة المرور'],
-  ['echo "Password123!" | passwd --stdin john','تعيين كلمة مرور مباشرة'],
-  ['usermod -aG wheel john','أضف لمجموعة sudo (wheel)'],
-  ['usermod -aG nginx,docker john','أضف لعدة مجموعات'],
-  ['usermod -L john','قفل الحساب'],
-  ['usermod -U john','فتح الحساب المقفول'],
-  ['usermod -e 2024-12-31 john','تاريخ انتهاء الحساب'],
-  ['usermod -s /bin/bash john','تغيير Shell'],
-  ['usermod -d /home/newdir john','تغيير مجلد home'],
-  ['userdel john','حذف المستخدم'],
-  ['userdel -r john','حذف مع مجلد home وكل ملفاته'],
-  ['id john','UID + GID + كل المجموعات'],
-  ['groups john','مجموعات المستخدم فقط'],
-],tip:'usermod -aG wheel john = إعطاء sudo. wheel = مجموعة السودو في RHEL',flags:['-m','-s (shell)','-r (مستخدم نظام)','-aG (أضف)','-L/-U (قفل/فتح)','-e (انتهاء)','-r مع userdel']},
-
-{c:'user',icon:'👥',n:'groupadd / groupmod / groupdel',ar:'إدارة المجموعات',s:'إنشاء وتعديل وحذف المجموعات',
-d:'المجموعات = أفضل طريقة لإدارة الصلاحيات بشكل جماعي.',
-ex:[
-  ['groupadd devteam','إنشاء مجموعة'],
-  ['groupadd -g 1050 devteam','إنشاء مع GID محدد'],
-  ['groupmod -n newname devteam','إعادة تسمية مجموعة'],
-  ['groupdel devteam','حذف مجموعة'],
-  ['cat /etc/group','قائمة المجموعات وأعضاءها'],
-  ['getent group devteam','معلومات مجموعة'],
-  ['getent passwd john','معلومات مستخدم'],
-  ['getent passwd | awk -F: \'$3>=1000{print $1,$3}\'','المستخدمين الحقيقيين (UID>=1000)'],
-],flags:['-g (GID)','-n (اسم جديد)','getent']},
-
-{c:'user',icon:'📊',n:'who / w / last / lastlog',ar:'مراقبة الدخولات',s:'من متصل الآن وسجل الدخولات',
-d:'مراقبة المستخدمين = جزء أساسي من أمان السيرفر.',
-ex:[
-  ['who','من متصل الآن + متى + من أين'],
-  ['w','من متصل + ماذا يفعل + المدة'],
-  ['whoami','من أنا في هذه الجلسة؟'],
-  ['id','UID + GID + مجموعات المستخدم الحالي'],
-  ['last','آخر دخولات وخروجات'],
-  ['last -20','آخر 20 دخول'],
-  ['last john','دخولات مستخدم محدد'],
-  ['last reboot','آخر restarts'],
-  ['last | grep "still logged"','من ما زال متصلاً حالياً'],
-  ['lastlog','آخر دخول لكل مستخدم'],
-  ['lastb','محاولات الدخول الفاشلة'],
-  ['grep "Failed password" /var/log/secure | tail -20','هجمات SSH الأخيرة'],
-  ['grep "Accepted password" /var/log/secure | tail -10','دخولات ناجحة عبر SSH'],
-],tip:'lastb + grep "Failed password" = تشخيص سريع لمحاولات الاختراق',flags:[]},
-
-{c:'user',icon:'🔑',n:'sudo / su / visudo',ar:'الصلاحيات المرتفعة',s:'نفّذ أوامر كـroot',
-d:'sudo = تنفيذ أمر واحد كـroot. su = تبديل المستخدم كلياً.',
-ex:[
-  ['sudo commande','نفّذ أمراً كـroot'],
-  ['sudo -i','ادخل كـroot (shell كامل)'],
-  ['sudo -s','shell كـroot مع بيئة المستخدم الحالي'],
-  ['sudo -u john commande','نفّذ كمستخدم آخر'],
-  ['sudo !!','كرر الأمر الأخير كـroot — مفيد جداً!'],
-  ['sudo -l','ما يمكنني تنفيذه بـsudo'],
-  ['sudo -l -U john','ما يمكن john تنفيذه'],
-  ['su - john','تبديل لمستخدم (مع بيئته)'],
-  ['su -','تبديل لـroot'],
-  ['visudo','تعديل /etc/sudoers بأمان'],
-  ['cat /etc/sudoers.d/*','ملفات sudoers الإضافية'],
-  ['echo "john ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/john','إعطاء john sudo كامل'],
-],tip:'sudo !! = أفضل صديق عند نسيان sudo — يكرر الأمر الأخير كـroot',flags:['-i','-s','-u','-l','!!','visudo']},
-
-/* ══ PERMISSIONS ══════════════════════════════════════ */
-{c:'perm',icon:'🔐',n:'chmod',ar:'صلاحيات الملفات',s:'من يقرأ؟ من يكتب؟ من ينفّذ؟',
-d:'chmod = تحديد من يستطيع قراءة/كتابة/تنفيذ الملف. ثلاثة مستويات: مالك (u)، مجموعة (g)، آخرون (o).',
-ex:[
-  ['chmod 644 fichier.conf','rw-r--r-- (ملف عادي — الأكثر شيوعاً)'],
-  ['chmod 755 script.sh','rwxr-xr-x (سكريبت وبرامج)'],
-  ['chmod 750 /app','rwxr-x--- (مجلد تطبيق)'],
-  ['chmod 640 config.conf','rw-r----- (config حساس)'],
-  ['chmod 600 /root/.ssh/id_rsa','rw------- (مفتاح SSH خاص — لازم!)'],
-  ['chmod 700 /root/.ssh','rwx------ (مجلد .ssh — لازم!)'],
-  ['chmod +x script.sh','أضف صلاحية التنفيذ للجميع'],
-  ['chmod u+x script.sh','أضف للمالك فقط'],
-  ['chmod g-w fichier','أزل كتابة المجموعة'],
-  ['chmod o-rwx fichier','أزل كل صلاحيات الآخرين'],
-  ['chmod -R 755 /var/www/html/','تطبيق على مجلد كامل'],
-  ['chmod -R u=rwX,g=rX,o= /app/','صلاحيات ذكية — X فقط للمجلدات'],
-],tip:'644 للملفات | 755 للمجلدات والسكريبتات | 600 للمفاتيح الخاصة',flags:['644','755','750','640','600','700','+x','-x','-R','X (للمجلدات فقط)']},
-
-{c:'perm',icon:'👑',n:'chown / chgrp',ar:'مالك الملف',s:'حدد من يملك الملف',
-d:'chown = تغيير المالك والمجموعة. مهم جداً بعد إنشاء ملفات أو نقلها.',
-ex:[
-  ['chown user:groupe fichier','غير المالك والمجموعة معاً'],
-  ['chown -R nginx:nginx /var/www/','مجلد كامل — مهم جداً للخدمات'],
-  ['chown -R apache:apache /var/www/html/','لـApache'],
-  ['chown root:root /etc/passwd','ملف نظام حساس'],
-  ['chown john: fichier','فقط المالك — المجموعة تبقى'],
-  ['chown :devteam /app/logs/','فقط المجموعة'],
-  ['chgrp devteam /app/shared/','غير المجموعة فقط بـchgrp'],
-  ['chown -R appuser:appuser /opt/app/','مستخدم التطبيق'],
-  ['chown --reference=template.conf nouveau.conf','نفس مالك ملف مرجعي'],
-  ['ls -la','تحقق من المالك والمجموعة'],
-],tip:'chown -R SERVICE:SERVICE /path = أول خطوة لإصلاح مشاكل صلاحيات الخدمات',flags:['-R (recursive)','user:group','chgrp','--reference']},
-
-{c:'perm',icon:'🔏',n:'umask / getfacl / setfacl',ar:'أذونات متقدمة',s:'الأذونات الافتراضية وACL',
-d:'umask = صلاحيات الملفات الجديدة. ACL = صلاحيات إضافية لمستخدمين بعينهم.',
-ex:[
-  ['umask','الـumask الحالية'],
-  ['umask 022','جديد: 644 ملفات، 755 مجلدات (الافتراضي)'],
-  ['umask 027','أمان أكثر: 640 ملفات، 750 مجلدات'],
-  ['getfacl fichier.conf','شوف ACL الملف'],
-  ['getfacl -R /app/','ACL لمجلد كامل'],
-  ['setfacl -m u:john:rw fichier.conf','أعط john صلاحية rw'],
-  ['setfacl -m g:devteam:rx /app/','أعط المجموعة rx'],
-  ['setfacl -m u:john:--- fichier.conf','منع john كلياً'],
-  ['setfacl -x u:john fichier.conf','أزل ACL لـjohn'],
-  ['setfacl -b fichier.conf','أزل كل ACL'],
-  ['setfacl -d -m u:john:rw /app/','ACL افتراضية للملفات الجديدة'],
-],tip:'ACL = عندما تحتاج إعطاء صلاحيات لمستخدم إضافي دون تغيير المالك الأساسي',flags:['umask','getfacl','setfacl -m','-x (حذف)','-b (حذف الكل)','-d (افتراضي)']},
-
-/* ══ SELINUX ══════════════════════════════════════════ */
-{c:'selinux',icon:'🛡️',n:'SELinux الأساسي',ar:'نظام التحكم الأمني',s:'في RHEL = Enforcing افتراضياً — غالباً سبب المشاكل',
-d:'SELinux = طبقة أمان فوق الصلاحيات التقليدية. Enforcing = يمنع. Permissive = يسجل فقط.',
-ex:[
-  ['getenforce','هل SELinux فعّال؟ Enforcing/Permissive/Disabled'],
-  ['sestatus','حالة مفصّلة مع الـpolicy والوضع'],
-  ['sestatus -v','أكثر تفصيلاً'],
-  ['setenforce 0','ضع Permissive مؤقتاً — للتشخيص فقط'],
-  ['setenforce 1','أعد Enforcing — دايماً بعد الاختبار'],
-  ['cat /etc/selinux/config','الإعداد الدائم — هنا يكون ENFORCING/PERMISSIVE/DISABLED'],
-  ['sed -i "s/SELINUX=enforcing/SELINUX=permissive/" /etc/selinux/config','تغيير دائم (يحتاج reboot)'],
-  ['ausearch -m avc -ts today','مشاكل SELinux اليوم'],
-  ['ausearch -m avc -ts recent','آخر 10 دقائق'],
-  ['ausearch -m avc -c nginx','مشاكل SELinux لـnginx'],
-  ['ausearch -m avc -c httpd','مشاكل SELinux لـhttpd'],
-  ['sealert -a /var/log/audit/audit.log','تحليل مع حلول مقترحة — ممتاز!'],
-  ['dnf install setroubleshoot-server -y','تثبيت sealert'],
-],tip:'setenforce 0 → إذا حلت المشكلة = SELinux هو السبب. setenforce 1 دايماً بعد الاختبار',flags:['getenforce','sestatus','setenforce 0/1','ausearch -m avc','sealert']},
-
-{c:'selinux',icon:'🏷️',n:'Contexts وLabels',ar:'تصحيح SELinux contexts',s:'كل ملف له label — لازم يكون صحيحاً',
-d:'كل ملف وعملية في RHEL له context/label يتحقق منه SELinux. خطأ في الـlabel = رفض الوصول.',
-ex:[
-  ['ls -laZ /var/www/html','شوف SELinux context للملفات'],
-  ['ls -laZ /etc/nginx/','context ملفات nginx'],
-  ['ps -eZ | grep nginx','context عملية nginx'],
-  ['ps -eZ | grep httpd','context عملية httpd'],
-  ['restorecon -v /etc/nginx/nginx.conf','أصلح label ملف واحد'],
-  ['restorecon -Rv /var/www/html','أصلح كل labels مجلد'],
-  ['restorecon -RvF /var/www/','إصلاح قسري (Force)'],
-  ['chcon -t httpd_sys_content_t /myapp/index.html','غير context مؤقتاً'],
-  ['chcon -Rt httpd_sys_content_t /myapp/','غير context مجلد كامل مؤقتاً'],
-  ['semanage fcontext -a -t httpd_sys_content_t "/myapp(/.*)?","','سجّل rule دائم'],
-  ['semanage fcontext -l | grep nginx','شوف rules المسجّلة لـnginx'],
-  ['semanage fcontext -l | grep httpd | head -20','rules httpd'],
-],tip:'restorecon -Rv /path = أول إصلاح عند "SELinux يمنع الوصول لملف"',flags:['ls -Z','ps -Z','restorecon -Rv','-RvF (قسري)','chcon -t','semanage fcontext']},
-
-{c:'selinux',icon:'⚙️',n:'Booleans وPorts SELinux',ar:'ضبط سلوك SELinux',s:'Booleans = مفاتيح تشغيل/إيقاف ميزات',
-d:'Booleans = طريقة سهلة لتغيير سلوك SELinux بدون تعديل policy معقدة.',
-ex:[
-  ['getsebool -a','كل Booleans في النظام'],
-  ['getsebool -a | grep httpd','Booleans المتعلقة بـhttpd'],
-  ['getsebool -a | grep nginx','Booleans المتعلقة بـnginx'],
-  ['getsebool httpd_can_network_connect','قيمة Boolean محدد'],
-  ['setsebool -P httpd_can_network_connect on','اسمح لـApache بالاتصال بالشبكة — دائم'],
-  ['setsebool -P httpd_use_nfs on','اسمح لـApache باستخدام NFS'],
-  ['setsebool -P httpd_can_connect_ldap on','اسمح بـLDAP'],
-  ['setsebool -P httpd_execmem on','اسمح بـexecutable memory'],
-  ['semanage port -l | grep http','ports المسموحة لـhttp'],
-  ['semanage port -l | grep ssh','ports المسموحة لـSSH'],
-  ['semanage port -a -t http_port_t -p tcp 8080','أضف port 8080 كـhttp port'],
-  ['semanage port -a -t ssh_port_t -p tcp 2222','أضف port 2222 كـSSH port'],
-],tip:'setsebool -P = -P تجعله دائماً حتى بعد restart. بلاها = مؤقت',flags:['getsebool -a','setsebool -P (دائم)','semanage port -l','-a (أضف)','-t (نوع)']},
-];
-
-/* ────────────────────────────────────────────────────
-   STATE
-──────────────────────────────────────────────────── */
-let curCat = 'all';
-
-document.getElementById('totalCount').textContent = DATA.length;
-
-/* ────────────────────────────────────────────────────
-   RENDER TABS
-──────────────────────────────────────────────────── */
-function buildTabs() {
-  const bar = document.getElementById('tabsBar');
-  const counts = {};
-  DATA.forEach(d => { counts[d.c] = (counts[d.c] || 0) + 1; });
-
-  let html = `<button class="tab-btn active" data-cat="all">
-    الكل <span class="tab-count">${DATA.length}</span>
-  </button>`;
-  CATEGORIES.forEach(cat => {
-    const n = counts[cat.id] || 0;
-    html += `<button class="tab-btn" data-cat="${cat.id}">
-      ${cat.icon} ${cat.label} <span class="tab-count">${n}</span>
-    </button>`;
-  });
-  bar.innerHTML = html;
-  bar.addEventListener('click', e => {
-    const btn = e.target.closest('.tab-btn');
-    if (!btn) return;
-    curCat = btn.dataset.cat;
-    bar.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    // sync sidebar
-    document.querySelectorAll('.sidebar-item').forEach(si => {
-      si.classList.toggle('active', si.dataset.cat === curCat);
-    });
-    render();
-  });
-}
-
-/* ────────────────────────────────────────────────────
-   RENDER SIDEBAR
-──────────────────────────────────────────────────── */
-function buildSidebar() {
-  const counts = {};
-  DATA.forEach(d => { counts[d.c] = (counts[d.c] || 0) + 1; });
-  const sb = document.getElementById('sidebar');
-  let html = `<div class="sidebar-section">
-    <div class="sidebar-label">التصنيفات</div>
-    <div class="sidebar-item active" data-cat="all">
-      <span class="sidebar-dot" style="background:#6e7681"></span>
-      الكل (${DATA.length})
-    </div>`;
-  CATEGORIES.forEach(cat => {
-    html += `<div class="sidebar-item" data-cat="${cat.id}">
-      <span class="sidebar-dot ${cat.dot}"></span>
-      ${cat.label} (${counts[cat.id] || 0})
-    </div>`;
-  });
-  html += '</div>';
-  sb.innerHTML = html;
-  sb.addEventListener('click', e => {
-    const item = e.target.closest('.sidebar-item');
-    if (!item) return;
-    curCat = item.dataset.cat;
-    sb.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-    item.classList.add('active');
-    // sync tabs
-    document.querySelectorAll('.tab-btn').forEach(b => {
-      b.classList.toggle('active', b.dataset.cat === curCat);
-    });
-    render();
-  });
-}
-
-/* ────────────────────────────────────────────────────
-   RENDER CONTENT
-──────────────────────────────────────────────────── */
-function render() {
-  const q = document.getElementById('searchInput').value.toLowerCase().trim();
-  let items = DATA.filter(d => {
-    if (curCat !== 'all' && d.c !== curCat) return false;
-    if (q) {
-      return d.n.toLowerCase().includes(q) ||
-        d.ar.toLowerCase().includes(q) ||
-        d.s.toLowerCase().includes(q) ||
-        d.d.toLowerCase().includes(q) ||
-        d.ex.some(e => e[0].toLowerCase().includes(q) || e[1].toLowerCase().includes(q));
-    }
-    return true;
+function renderCommands() {
+  const list = document.getElementById('commandList');
+  let filtered = commands.filter(c => {
+    const matchCat = currentCat === 'all' || c.cat === currentCat;
+    const matchSearch = !currentSearch ||
+      c.name.toLowerCase().includes(currentSearch) ||
+      c.short.toLowerCase().includes(currentSearch) ||
+      c.desc.toLowerCase().includes(currentSearch);
+    return matchCat && matchSearch;
   });
 
-  if (!items.length) {
-    document.getElementById('contentArea').innerHTML = `
-      <div class="empty-state">
-        <h3>ما لقينا والو 😅</h3>
-        <p>جرب بكلمة أخرى — مثلاً: grep، tail، port، service</p>
-      </div>`;
+  document.getElementById('cmdCount').textContent = filtered.length;
+
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="empty"><div>🔍</div>ما لقينا والو<br><small style="font-size:0.8rem">جرب كلمة أخرى</small></div>`;
     return;
   }
 
-  const grps = {};
-  items.forEach(d => { if (!grps[d.c]) grps[d.c] = []; grps[d.c].push(d); });
+  // Group by category
+  const groups = {};
+  const catNames = {
+    navigation: '📁 ملفات & تنقل',
+    reseau: '🌐 شبكة',
+    services: '⚙️ إدارة السيرفيسات',
+    disques: '💾 الأقراص & LVM',
+    users: '👤 المستخدمين',
+    process: '⚡ البروسيسات',
+    paquets: '📦 إدارة الباكيجات',
+    permissions: '🔐 الصلاحيات'
+  };
 
-  let html = '';
-
-  // Combos
-  const showCombos = COMBOS.filter(cb =>
-    !q && (curCat === 'all' || cb.cats.includes(curCat))
-  );
-  if (showCombos.length) {
-    html += `<div class="combos-section">
-      <div class="combos-title">💡 أوامر مركبة جاهزة</div>
-      <div class="combos-grid">`;
-    showCombos.forEach(cb => {
-      html += `<div class="combo-card">
-        <div class="combo-card-title">${cb.title}</div>
-        <div class="combo-code">`;
-      cb.lines.forEach(l => {
-        html += `<div><span class="combo-prompt">$</span><span class="combo-cmd">${esc(l[0])}</span>  <span class="combo-cmt"># ${esc(l[1])}</span></div>`;
-      });
-      html += `</div></div>`;
-    });
-    html += `</div></div>`;
-  }
-
-  // cat order
-  const catOrder = CATEGORIES.map(c => c.id);
-  const orderedCats = Object.keys(grps).sort((a, b) => catOrder.indexOf(a) - catOrder.indexOf(b));
-
-  orderedCats.forEach(cat => {
-    const catMeta = CATEGORIES.find(c => c.id === cat) || {};
-    html += `<div class="section">
-      <div class="section-header">
-        <div class="section-dot ${catMeta.dot || ''}"></div>
-        <div class="section-title">${catMeta.icon || ''} ${catMeta.label || cat}</div>
-        <div class="section-count">${grps[cat].length} أمر</div>
-      </div>
-      <div class="cards-grid">`;
-    grps[cat].forEach((d, i) => {
-      const id = `card_${cat}_${i}_${Math.random().toString(36).slice(2,6)}`;
-      const rows = d.ex.map(e =>
-        `<div class="ex-row"><span class="ex-p">$</span><span class="ex-c">${esc(e[0])}</span><span class="ex-comment"># ${esc(e[1])}</span></div>`
-      ).join('');
-      const chips = d.flags && d.flags.length
-        ? `<div class="flags-row">${d.flags.map(f => `<span class="flag-chip">${esc(f)}</span>`).join('')}</div>` : '';
-      html += `<div class="cmd-card" id="${id}" onclick="toggleCard('${id}')">
-        <div class="card-head">
-          <div class="card-icon ic-${cat}">${d.icon}</div>
-          <div class="card-texts">
-            <span class="card-name">${esc(d.n)}</span>
-            <span class="card-ar">${d.ar}</span>
-            <span class="card-short">${d.s}</span>
-          </div>
-          <span class="card-chevron">▾</span>
-        </div>
-        <div class="card-body">
-          <div class="card-desc">${d.d}</div>
-          <div class="ex-label">الأمثلة:</div>
-          <div class="ex-block">${rows}</div>
-          ${chips}
-          ${d.tip ? `<div class="tip-box"><span class="tip-label">💡 نصيحة يومية:</span>${d.tip}</div>` : ''}
-        </div>
-      </div>`;
-    });
-    html += `</div></div>`;
+  filtered.forEach(c => {
+    if (!groups[c.cat]) groups[c.cat] = [];
+    groups[c.cat].push(c);
   });
 
-  document.getElementById('contentArea').innerHTML = html;
+  let html = '';
+  let delay = 0;
+
+  if (currentCat !== 'all' || currentSearch) {
+    filtered.forEach((c, i) => { html += cardHTML(c, i * 50); });
+  } else {
+    Object.keys(groups).forEach(cat => {
+      html += `<div class="section-title">${catNames[cat] || cat}</div>`;
+      groups[cat].forEach((c, i) => { html += cardHTML(c, delay); delay += 30; });
+    });
+  }
+
+  list.innerHTML = html;
+}
+
+function cardHTML(c, delay) {
+  const badge = c.badge === 'danger'
+    ? `<span class="badge badge-danger">⚠️ خطر</span>`
+    : c.badge === 'info'
+    ? `<span class="badge badge-info">ℹ️ مهم</span>`
+    : '';
+
+  return `
+    <div class="cmd-card" id="card-${c.name.replace(/\s/g,'-')}" style="animation-delay:${delay}ms">
+      <div class="cmd-header" onclick="toggleCard('${c.name.replace(/\s/g,'-')}')">
+        <div class="cmd-icon" style="background:${c.color}">${c.icon}</div>
+        <div class="cmd-info">
+          <div class="cmd-name">${c.name}</div>
+          <div class="cmd-short">${c.short}</div>
+        </div>
+        ${badge}
+        <span class="cmd-arrow">▼</span>
+      </div>
+      <div class="cmd-body">
+        <div class="cmd-desc">${c.desc}</div>
+        <div class="cmd-label">// الصيغة</div>
+        <div class="cmd-syntax">${c.syntax}</div>
+        <div class="cmd-label">// أمثلة</div>
+        <div class="cmd-example">${c.examples}</div>
+        <button class="copy-btn" onclick="copyCmd('${c.name}', this)">📋 نسخ الأمر</button>
+      </div>
+    </div>`;
 }
 
 function toggleCard(id) {
-  const el = document.getElementById(id);
-  if (el) el.classList.toggle('open');
+  const card = document.getElementById('card-' + id);
+  const wasOpen = card.classList.contains('open');
+  document.querySelectorAll('.cmd-card.open').forEach(c => c.classList.remove('open'));
+  if (!wasOpen) {
+    card.classList.add('open');
+    setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+  }
 }
 
-function doSearch() { render(); }
-
-function esc(s) {
-  return String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+function filterCat(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCommands();
 }
 
-/* INIT */
-buildTabs();
-buildSidebar();
-render();
+function filterCommands() {
+  currentSearch = document.getElementById('searchInput').value.toLowerCase();
+  renderCommands();
+}
+
+function copyCmd(name, btn) {
+  navigator.clipboard.writeText(name).then(() => {
+    btn.textContent = '✅ تم النسخ!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 نسخ الأمر'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+}
+
+// Init
+renderCommands();
 </script>
 </body>
 </html>
