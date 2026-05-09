@@ -1,937 +1,582 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="ar">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RedHat Darija Guide</title>
   <link rel="manifest" href="/manifest.json">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js');
-    }
-  </script>
+  <script>if('serviceWorker'in navigator){navigator.serviceWorker.register('/sw.js');}</script>
   <style>
-    :root {
-      --red: #cc0000;
-      --red-dark: #990000;
-      --red-light: #ff2222;
-      --bg: #0f0f0f;
-      --bg2: #1a1a1a;
-      --bg3: #242424;
-      --text: #f0f0f0;
-      --text2: #aaaaaa;
-      --green: #00ff88;
-      --yellow: #ffd700;
-      --blue: #4a9eff;
-      --border: #2a2a2a;
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Tajawal', sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    /* HEADER */
-    .header {
-      background: linear-gradient(135deg, #1a0000 0%, #2d0000 50%, #1a0000 100%);
-      border-bottom: 2px solid var(--red);
-      padding: 16px 20px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      box-shadow: 0 4px 20px rgba(204,0,0,0.3);
-    }
-
-    .logo {
-      width: 46px;
-      height: 46px;
-      flex-shrink: 0;
-    }
-
-    .header-text h1 {
-      font-size: 1.3rem;
-      font-weight: 900;
-      color: #fff;
-      line-height: 1.1;
-    }
-
-    .header-text span {
-      font-size: 0.75rem;
-      color: var(--red-light);
-      font-family: 'JetBrains Mono', monospace;
-      letter-spacing: 1px;
-    }
-
-    /* SEARCH */
-    .search-wrap {
-      padding: 14px 16px;
-      background: var(--bg2);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .search-box {
-      width: 100%;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px 16px 12px 42px;
-      color: var(--text);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.2s;
-      position: relative;
-    }
-
-    .search-box:focus {
-      border-color: var(--red);
-      box-shadow: 0 0 0 3px rgba(204,0,0,0.15);
-    }
-
-    .search-wrap {
-      position: relative;
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 30px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text2);
-      font-size: 1rem;
-      pointer-events: none;
-    }
-
-    /* CATEGORIES */
-    .categories {
-      display: flex;
-      gap: 8px;
-      padding: 14px 16px;
-      overflow-x: auto;
-      scrollbar-width: none;
-      background: var(--bg2);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .categories::-webkit-scrollbar { display: none; }
-
-    .cat-btn {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      color: var(--text2);
-      padding: 7px 16px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-family: 'Tajawal', sans-serif;
-      font-weight: 700;
-      white-space: nowrap;
-      cursor: pointer;
-      transition: all 0.2s;
-      flex-shrink: 0;
-    }
-
-    .cat-btn.active, .cat-btn:hover {
-      background: var(--red);
-      border-color: var(--red);
-      color: #fff;
-    }
-
-    /* STATS BAR */
-    .stats-bar {
-      padding: 10px 16px;
-      font-size: 0.75rem;
-      color: var(--text2);
-      font-family: 'JetBrains Mono', monospace;
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .stats-bar span { color: var(--green); }
-
-    /* COMMAND LIST */
-    .command-list {
-      padding: 12px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .section-title {
-      font-size: 0.7rem;
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--red);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 16px 0 6px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 4px;
-    }
-
-    /* COMMAND CARD */
-    .cmd-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      transition: all 0.2s;
-    }
-
-    .cmd-card:hover {
-      border-color: rgba(204,0,0,0.4);
-    }
-
-    .cmd-card.open {
-      border-color: var(--red);
-      box-shadow: 0 0 16px rgba(204,0,0,0.15);
-    }
-
-    .cmd-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 16px;
-      cursor: pointer;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .cmd-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-      flex-shrink: 0;
-    }
-
-    .cmd-info { flex: 1; min-width: 0; }
-
-    .cmd-name {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--green);
-    }
-
-    .cmd-short {
-      font-size: 0.78rem;
-      color: var(--text2);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-top: 2px;
-    }
-
-    .cmd-arrow {
-      color: var(--text2);
-      font-size: 0.9rem;
-      transition: transform 0.3s;
-      flex-shrink: 0;
-    }
-
-    .cmd-card.open .cmd-arrow { transform: rotate(180deg); }
-
-    /* CMD BODY */
-    .cmd-body {
-      display: none;
-      padding: 0 16px 16px;
-      border-top: 1px solid var(--border);
-    }
-
-    .cmd-card.open .cmd-body { display: block; }
-
-    .cmd-desc {
-      font-size: 0.9rem;
-      color: var(--text);
-      line-height: 1.6;
-      padding: 12px 0 10px;
-    }
-
-    .cmd-label {
-      font-size: 0.7rem;
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--red-light);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-      margin-top: 10px;
-    }
-
-    .cmd-syntax {
-      background: #0a0a0a;
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--red);
-      border-radius: 8px;
-      padding: 12px 14px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.82rem;
-      color: var(--yellow);
-      word-break: break-all;
-      line-height: 1.6;
-    }
-
-    .cmd-example {
-      background: #050505;
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--green);
-      border-radius: 8px;
-      padding: 12px 14px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.82rem;
-      color: var(--green);
-      word-break: break-all;
-      line-height: 1.8;
-    }
-
-    .cmd-example .comment {
-      color: #555;
-    }
-
-    .copy-btn {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      color: var(--text2);
-      padding: 6px 14px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      cursor: pointer;
-      margin-top: 8px;
-      font-family: 'JetBrains Mono', monospace;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .copy-btn:hover, .copy-btn.copied {
-      background: var(--red);
-      border-color: var(--red);
-      color: #fff;
-    }
-
-    /* DANGER BADGE */
-    .badge {
-      font-size: 0.65rem;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-weight: 700;
-      font-family: 'JetBrains Mono', monospace;
-      flex-shrink: 0;
-    }
-
-    .badge-danger { background: rgba(255,50,50,0.15); color: #ff5555; border: 1px solid #ff555533; }
-    .badge-info { background: rgba(74,158,255,0.15); color: #4a9eff; border: 1px solid #4a9eff33; }
-    .badge-tip { background: rgba(0,255,136,0.1); color: var(--green); border: 1px solid #00ff8833; }
-
-    /* EMPTY */
-    .empty {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--text2);
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .empty div { font-size: 2rem; margin-bottom: 10px; }
-
-    /* BOTTOM NAV */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0; right: 0;
-      background: var(--bg2);
-      border-top: 1px solid var(--border);
-      display: flex;
-      padding: 8px 0 12px;
-      z-index: 100;
-    }
-
-    .nav-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      padding: 6px;
-      cursor: pointer;
-      color: var(--text2);
-      font-size: 0.65rem;
-      font-family: 'Tajawal', sans-serif;
-      transition: color 0.2s;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .nav-item.active { color: var(--red); }
-    .nav-item span:first-child { font-size: 1.3rem; }
-
-    /* SPACER for bottom nav */
-    .bottom-spacer { height: 80px; }
-
-    /* PROGRESS */
-    .progress-wrap {
-      background: var(--bg3);
-      border-radius: 4px;
-      height: 4px;
-      margin-top: 8px;
-      overflow: hidden;
-    }
-
-    .progress-bar {
-      height: 100%;
-      background: linear-gradient(90deg, var(--red), var(--red-light));
-      border-radius: 4px;
-      transition: width 0.5s;
-    }
-
-    /* ABOUT PAGE */
-    .page { display: none; }
-    .page.active { display: block; }
-
-    .about-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 20px;
-      margin: 16px;
-    }
-
-    .about-card h3 {
-      color: var(--red-light);
-      font-size: 1rem;
-      margin-bottom: 8px;
-    }
-
-    .about-card p {
-      color: var(--text2);
-      font-size: 0.85rem;
-      line-height: 1.7;
-    }
-
-    .tip-card {
-      background: linear-gradient(135deg, #1a0a0a, #0a1a0a);
-      border: 1px solid #333;
-      border-radius: 12px;
-      padding: 16px;
-      margin: 8px 16px;
-    }
-
-    .tip-card .tip-icon { font-size: 1.5rem; margin-bottom: 6px; }
-    .tip-card h4 { color: var(--text); font-size: 0.9rem; margin-bottom: 4px; }
-    .tip-card p { color: var(--text2); font-size: 0.8rem; line-height: 1.6; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .cmd-card { animation: fadeIn 0.3s ease both; }
+    :root{--red:#cc0000;--red-dark:#990000;--red-light:#ff2222;--bg:#0f0f0f;--bg2:#1a1a1a;--bg3:#242424;--text:#f0f0f0;--text2:#aaaaaa;--green:#00ff88;--yellow:#ffd700;--blue:#4a9eff;--border:#2a2a2a;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--bg);color:var(--text);font-family:'Tajawal',sans-serif;min-height:100vh;overflow-x:hidden;}
+    .header{background:linear-gradient(135deg,#1a0000 0%,#2d0000 50%,#1a0000 100%);border-bottom:2px solid var(--red);padding:12px 16px;position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(204,0,0,0.3);}
+    .logo{width:42px;height:42px;flex-shrink:0;}
+    .header-text{flex:1;}
+    .header-text h1{font-size:1.2rem;font-weight:900;color:#fff;line-height:1.1;}
+    .header-text span{font-size:0.72rem;color:var(--red-light);font-family:'JetBrains Mono',monospace;letter-spacing:1px;}
+    .lang-btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;padding:6px 12px;border-radius:20px;font-size:0.8rem;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Tajawal',sans-serif;font-weight:700;transition:all 0.2s;flex-shrink:0;}
+    .lang-btn:hover{background:var(--red);border-color:var(--red);}
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:999;align-items:flex-end;justify-content:center;}
+    .modal-overlay.open{display:flex;}
+    .modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:480px;animation:slideUp 0.3s ease;}
+    @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+    .modal-title{font-size:1rem;font-weight:900;color:var(--text);margin-bottom:16px;text-align:center;}
+    .lang-option{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;cursor:pointer;margin-bottom:8px;border:2px solid var(--border);background:var(--bg3);transition:all 0.2s;}
+    .lang-option:hover{border-color:var(--red);}
+    .lang-option.selected{border-color:var(--red);background:rgba(204,0,0,0.1);}
+    .lang-flag{font-size:1.8rem;}
+    .lang-info h3{font-size:1rem;font-weight:700;color:var(--text);}
+    .lang-info p{font-size:0.78rem;color:var(--text2);}
+    .lang-check{margin-left:auto;color:var(--red);font-size:1.2rem;}
+    .modal-cancel{width:100%;padding:12px;border-radius:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:0.88rem;cursor:pointer;margin-top:4px;font-family:'Tajawal',sans-serif;}
+    .search-wrap{padding:12px 16px;background:var(--bg2);border-bottom:1px solid var(--border);position:relative;}
+    .search-icon{position:absolute;left:28px;top:50%;transform:translateY(-50%);color:var(--text2);pointer-events:none;}
+    .search-box{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:11px 16px 11px 40px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:0.88rem;outline:none;transition:border-color 0.2s;}
+    .search-box:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(204,0,0,0.15);}
+    .categories{display:flex;gap:8px;padding:12px 16px;overflow-x:auto;scrollbar-width:none;background:var(--bg2);border-bottom:1px solid var(--border);}
+    .categories::-webkit-scrollbar{display:none;}
+    .cat-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:7px 14px;border-radius:20px;font-size:0.78rem;font-family:'Tajawal',sans-serif;font-weight:700;white-space:nowrap;cursor:pointer;transition:all 0.2s;flex-shrink:0;}
+    .cat-btn.active,.cat-btn:hover{background:var(--red);border-color:var(--red);color:#fff;}
+    .stats-bar{padding:9px 16px;font-size:0.73rem;color:var(--text2);font-family:'JetBrains Mono',monospace;border-bottom:1px solid var(--border);}
+    .stats-bar span{color:var(--green);}
+    .command-list{padding:12px 16px;display:flex;flex-direction:column;gap:8px;}
+    .section-title{font-size:0.68rem;font-family:'JetBrains Mono',monospace;color:var(--red);letter-spacing:2px;text-transform:uppercase;padding:14px 0 6px;border-bottom:1px solid var(--border);margin-bottom:4px;}
+    .cmd-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:all 0.2s;}
+    .cmd-card:hover{border-color:rgba(204,0,0,0.4);}
+    .cmd-card.open{border-color:var(--red);box-shadow:0 0 16px rgba(204,0,0,0.15);}
+    .cmd-header{display:flex;align-items:center;gap:12px;padding:13px 14px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;}
+    .cmd-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+    .cmd-info{flex:1;min-width:0;}
+    .cmd-name{font-family:'JetBrains Mono',monospace;font-size:0.95rem;font-weight:700;color:var(--green);}
+    .cmd-short{font-size:0.76rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
+    .cmd-arrow{color:var(--text2);font-size:0.85rem;transition:transform 0.3s;flex-shrink:0;}
+    .cmd-card.open .cmd-arrow{transform:rotate(180deg);}
+    .cmd-body{display:none;padding:0 14px 14px;border-top:1px solid var(--border);}
+    .cmd-card.open .cmd-body{display:block;}
+    .cmd-desc{font-size:0.88rem;color:var(--text);line-height:1.65;padding:11px 0 9px;}
+    .cmd-label{font-size:0.68rem;font-family:'JetBrains Mono',monospace;color:var(--red-light);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;margin-top:9px;}
+    .cmd-syntax{background:#0a0a0a;border:1px solid var(--border);border-left:3px solid var(--red);border-radius:8px;padding:11px 13px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--yellow);word-break:break-all;line-height:1.6;}
+    .cmd-example{background:#050505;border:1px solid var(--border);border-left:3px solid var(--green);border-radius:8px;padding:11px 13px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--green);word-break:break-all;line-height:1.8;}
+    .cmd-example .comment{color:#555;}
+    .copy-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:6px 13px;border-radius:6px;font-size:0.73rem;cursor:pointer;margin-top:8px;font-family:'JetBrains Mono',monospace;transition:all 0.2s;display:inline-flex;align-items:center;gap:5px;}
+    .copy-btn:hover,.copy-btn.copied{background:var(--red);border-color:var(--red);color:#fff;}
+    .badge{font-size:0.63rem;padding:2px 7px;border-radius:10px;font-weight:700;font-family:'JetBrains Mono',monospace;flex-shrink:0;}
+    .badge-danger{background:rgba(255,50,50,0.15);color:#ff5555;border:1px solid #ff555533;}
+    .badge-info{background:rgba(74,158,255,0.15);color:#4a9eff;border:1px solid #4a9eff33;}
+    .empty{text-align:center;padding:60px 20px;color:var(--text2);font-family:'JetBrains Mono',monospace;}
+    .empty div{font-size:2rem;margin-bottom:10px;}
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);display:flex;padding:8px 0 12px;z-index:100;}
+    .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px;cursor:pointer;color:var(--text2);font-size:0.63rem;font-family:'Tajawal',sans-serif;transition:color 0.2s;-webkit-tap-highlight-color:transparent;}
+    .nav-item.active{color:var(--red);}
+    .nav-item span:first-child{font-size:1.25rem;}
+    .bottom-spacer{height:80px;}
+    .page{display:none;}
+    .page.active{display:block;}
+    .tip-card{background:linear-gradient(135deg,#1a0a0a,#0a1a0a);border:1px solid #333;border-radius:12px;padding:15px;margin:8px 16px;}
+    .tip-card .tip-icon{font-size:1.4rem;margin-bottom:5px;}
+    .tip-card h4{color:var(--text);font-size:0.88rem;margin-bottom:4px;}
+    .tip-card p{color:var(--text2);font-size:0.78rem;line-height:1.6;}
+    .about-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:18px;margin:12px 16px;}
+    .about-card h3{color:var(--red-light);font-size:0.95rem;margin-bottom:7px;}
+    .about-card p{color:var(--text2);font-size:0.82rem;line-height:1.7;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .cmd-card{animation:fadeIn 0.3s ease both;}
   </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
-  <svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="50" cy="50" r="48" fill="#cc0000"/>
-    <path d="M50 15 C30 15 15 30 15 50 C15 70 30 85 50 85 C70 85 85 70 85 50 C85 30 70 15 50 15Z" fill="#aa0000"/>
-    <path d="M35 35 L50 20 L65 35 L65 55 Q65 68 50 75 Q35 68 35 55Z" fill="white" opacity="0.95"/>
-    <path d="M42 48 L50 32 L58 48 L55 48 L55 62 L45 62 L45 48Z" fill="#cc0000"/>
-    <circle cx="50" cy="70" r="4" fill="white" opacity="0.5"/>
-  </svg>
+  <svg class="logo" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#cc0000"/><path d="M50 15C30 15 15 30 15 50C15 70 30 85 50 85C70 85 85 70 85 50C85 30 70 15 50 15Z" fill="#aa0000"/><path d="M35 35L50 20L65 35L65 55Q65 68 50 75Q35 68 35 55Z" fill="white" opacity="0.95"/><path d="M42 48L50 32L58 48L55 48L55 62L45 62L45 48Z" fill="#cc0000"/><circle cx="50" cy="70" r="4" fill="white" opacity="0.5"/></svg>
   <div class="header-text">
-    <h1>RedHat Darija</h1>
-    <span>دليل الأوامر للمبتدئين</span>
+    <h1 id="appTitle">RedHat Darija</h1>
+    <span id="appSubtitle">دليل الأوامر للمبتدئين</span>
+  </div>
+  <button class="lang-btn" onclick="openLangModal()">
+    <span id="currentLangFlag">🇲🇦</span>
+    <span id="currentLangCode">AR</span>
+  </button>
+</div>
+
+<!-- LANG MODAL -->
+<div class="modal-overlay" id="langModal" onclick="closeLangModalOutside(event)">
+  <div class="modal-box">
+    <div class="modal-title" id="modalTitle">اختار اللغة</div>
+    <div class="lang-option selected" id="opt-ar" onclick="setLang('ar')">
+      <span class="lang-flag">🇲🇦</span>
+      <div class="lang-info"><h3>الدارجة المغربية</h3><p>Arabic / Darija</p></div>
+      <span class="lang-check" id="check-ar">✓</span>
+    </div>
+    <div class="lang-option" id="opt-fr" onclick="setLang('fr')">
+      <span class="lang-flag">🇫🇷</span>
+      <div class="lang-info"><h3>Français</h3><p>French / Français</p></div>
+      <span class="lang-check" id="check-fr" style="display:none">✓</span>
+    </div>
+    <div class="lang-option" id="opt-en" onclick="setLang('en')">
+      <span class="lang-flag">🇬🇧</span>
+      <div class="lang-info"><h3>English</h3><p>English / Anglais</p></div>
+      <span class="lang-check" id="check-en" style="display:none">✓</span>
+    </div>
+    <button class="modal-cancel" onclick="closeLangModal()">إلغاء / Annuler / Cancel</button>
   </div>
 </div>
 
-<!-- PAGE: HOME -->
+<!-- HOME PAGE -->
 <div class="page active" id="page-home">
-
-  <!-- SEARCH -->
   <div class="search-wrap">
     <span class="search-icon">🔍</span>
-    <input class="search-box" type="text" id="searchInput" placeholder="ابحث عن أمر... (ex: ls, grep, systemctl)" oninput="filterCommands()">
+    <input class="search-box" type="text" id="searchInput" placeholder="..." oninput="filterCommands()">
   </div>
-
-  <!-- CATEGORIES -->
-  <div class="categories">
-    <button class="cat-btn active" onclick="filterCat('all', this)">🌐 الكل</button>
-    <button class="cat-btn" onclick="filterCat('navigation', this)">📁 ملفات</button>
-    <button class="cat-btn" onclick="filterCat('reseau', this)">🌐 شبكة</button>
-    <button class="cat-btn" onclick="filterCat('services', this)">⚙️ سيرفيس</button>
-    <button class="cat-btn" onclick="filterCat('disques', this)">💾 ديسك</button>
-    <button class="cat-btn" onclick="filterCat('users', this)">👤 يوزرز</button>
-    <button class="cat-btn" onclick="filterCat('process', this)">⚡ بروسيس</button>
-    <button class="cat-btn" onclick="filterCat('paquets', this)">📦 باكيج</button>
-    <button class="cat-btn" onclick="filterCat('permissions', this)">🔐 صلاحيات</button>
-  </div>
-
-  <!-- STATS -->
-  <div class="stats-bar" id="statsBar">
-    <span id="cmdCount">0</span> أمر متاح • اضغط على أي أمر لترى التفاصيل
-  </div>
-
-  <!-- COMMANDS -->
+  <div class="categories" id="catBar"></div>
+  <div class="stats-bar"><span id="cmdCount">0</span> <span id="statsText"></span></div>
   <div class="command-list" id="commandList"></div>
   <div class="bottom-spacer"></div>
 </div>
 
-<!-- PAGE: TIPS -->
+<!-- TIPS PAGE -->
 <div class="page" id="page-tips">
-  <div style="padding:16px 0">
-    <div class="section-title" style="margin:0 16px">// نصائح مهمة</div>
-    <div class="tip-card">
-      <div class="tip-icon">⚠️</div>
-      <h4>انتبه من rm -rf</h4>
-      <p>هاد الأمر كيمسح كل شيء بدون رجعة. دير backup قبل أي حاجة.</p>
-    </div>
-    <div class="tip-card">
-      <div class="tip-icon">💡</div>
-      <h4>Tab = إكمال تلقائي</h4>
-      <p>كتبت نص الأمر؟ دوز Tab وLinux غادي يكمله عليك بلا ما تكتب كامل.</p>
-    </div>
-    <div class="tip-card">
-      <div class="tip-icon">🔍</div>
-      <h4>man = دليل كل أمر</h4>
-      <p>ما عارفتيش واش كيدير أمر؟ كتب: <code style="color:var(--green)">man ls</code> وغادي تلقى كل شيء.</p>
-    </div>
-    <div class="tip-card">
-      <div class="tip-icon">🕐</div>
-      <h4>history = تاريخ الأوامر</h4>
-      <p>كتب <code style="color:var(--green)">history</code> باش تشوف كل الأوامر اللي درتيها. Ctrl+R باش تبحث فيهم.</p>
-    </div>
-    <div class="tip-card">
-      <div class="tip-icon">🛡️</div>
-      <h4>sudo = صلاحيات root</h4>
-      <p>كل أمر خطير يحتاج sudo قبله. كيعطيك صلاحيات المدير مؤقتاً.</p>
-    </div>
-    <div class="tip-card">
-      <div class="tip-icon">📋</div>
-      <h4>Ctrl+C = إيقاف أمر</h4>
-      <p>أمر عالق ماشي؟ دوز Ctrl+C باش توقفه فوراً.</p>
-    </div>
-    <div class="tip-card">
-      <div class="tip-icon">🔗</div>
-      <h4>Pipe | = ربط الأوامر</h4>
-      <p>كتقدر تربط أوامر ببعضها: <code style="color:var(--green)">ps aux | grep nginx</code> كيقلب على nginx فقط.</p>
-    </div>
-    <div class="tip-card">
-      <div class="tip-icon">📁</div>
-      <h4>~ = مجلدك الشخصي</h4>
-      <p>~ كتعني /home/يوزرنيمك. كتقدر تكتب cd ~ باش ترجع للبيت دايماً.</p>
-    </div>
-  </div>
+  <div style="padding:16px 0" id="tipsContent"></div>
   <div class="bottom-spacer"></div>
 </div>
 
-<!-- PAGE: ABOUT -->
+<!-- ABOUT PAGE -->
 <div class="page" id="page-about">
-  <div style="padding:16px 0">
-    <div class="about-card" style="text-align:center; background: linear-gradient(135deg, #1a0000, #0a0a0a)">
-      <svg width="70" height="70" viewBox="0 0 100 100" style="margin:0 auto 12px">
-        <circle cx="50" cy="50" r="48" fill="#cc0000"/>
-        <path d="M50 15 C30 15 15 30 15 50 C15 70 30 85 50 85 C70 85 85 70 85 50 C85 30 70 15 50 15Z" fill="#aa0000"/>
-        <path d="M35 35 L50 20 L65 35 L65 55 Q65 68 50 75 Q35 68 35 55Z" fill="white" opacity="0.95"/>
-        <path d="M42 48 L50 32 L58 48 L55 48 L55 62 L45 62 L45 48Z" fill="#cc0000"/>
-      </svg>
-      <h2 style="color:#fff; font-size:1.4rem">RedHat Darija</h2>
-      <p style="color:var(--red-light); font-size:0.8rem; font-family:'JetBrains Mono',monospace">دليل Red Hat Linux بالدارجة</p>
-    </div>
-    <div class="about-card">
-      <h3>🎯 علاش هاد التطبيق؟</h3>
-      <p>هاد الدليل مصمم للمبتدئين اللي بغاو يتعلمو Red Hat Linux بطريقة سهلة ومفهومة بالدارجة المغربية.</p>
-    </div>
-    <div class="about-card">
-      <h3>📊 إحصائيات</h3>
-      <p>✅ +60 أمر موثق<br>✅ أمثلة عملية لكل أمر<br>✅ يشتغل بدون انترنت<br>✅ مجاني 100%</p>
-    </div>
-    <div class="about-card">
-      <h3>🚀 نصيحة</h3>
-      <p>أحسن طريقة تتعلم هي التطبيق العملي. جرب كل أمر على virtual machine ديالك ولا على KillerCoda.</p>
-    </div>
-  </div>
+  <div style="padding:16px 0" id="aboutContent"></div>
   <div class="bottom-spacer"></div>
 </div>
 
 <!-- BOTTOM NAV -->
 <div class="bottom-nav">
-  <div class="nav-item active" id="nav-home" onclick="showPage('home')">
-    <span>📋</span>
-    <span>أوامر</span>
-  </div>
-  <div class="nav-item" id="nav-tips" onclick="showPage('tips')">
-    <span>💡</span>
-    <span>نصائح</span>
-  </div>
-  <div class="nav-item" id="nav-about" onclick="showPage('about')">
-    <span>ℹ️</span>
-    <span>عن التطبيق</span>
-  </div>
+  <div class="nav-item active" id="nav-home" onclick="showPage('home')"><span>📋</span><span id="nav1Text">أوامر</span></div>
+  <div class="nav-item" id="nav-tips" onclick="showPage('tips')"><span>💡</span><span id="nav2Text">نصائح</span></div>
+  <div class="nav-item" id="nav-about" onclick="showPage('about')"><span>ℹ️</span><span id="nav3Text">عن التطبيق</span></div>
 </div>
 
 <script>
-const commands = [
-  // NAVIGATION & FICHIERS
-  { cat: 'navigation', icon: '📋', color: '#1a3a1a', name: 'ls', short: 'عرض محتوى المجلد', badge: null,
-    desc: 'ls كيعرض ليك كل الملفات والمجلدات اللي فداخل المجلد الحالي. هو أول أمر تتعلمه في Linux.',
-    syntax: 'ls [options] [dossier]',
-    examples: `ls                    <span class="comment"># عرض الملفات العادية</span>\nls -l                 <span class="comment"># عرض تفصيلي مع الصلاحيات</span>\nls -la                <span class="comment"># عرض كل شيء + الملفات المخفية</span>\nls -lh                <span class="comment"># عرض الأحجام بشكل مقروء</span>\nls /var/log           <span class="comment"># عرض مجلد معين</span>` },
+const T={
+  ar:{appTitle:'RedHat Darija',appSubtitle:'دليل الأوامر للمبتدئين',searchPlaceholder:'ابحث عن أمر... (ex: ls, grep)',statsText:'أمر متاح',nav1:'أوامر',nav2:'نصائح',nav3:'عن التطبيق',modalTitle:'اختار اللغة',catAll:'🌐 الكل',catNav:'📁 ملفات',catNet:'🌐 شبكة',catSvc:'⚙️ سيرفيس',catDisk:'💾 ديسك',catUsr:'👤 يوزرز',catProc:'⚡ بروسيس',catPkg:'📦 باكيج',catPerm:'🔐 صلاحيات',syntaxLabel:'// الصيغة',exampleLabel:'// أمثلة',copyBtn:'📋 نسخ الأمر',copiedBtn:'✅ تم النسخ!',badgeDanger:'⚠️ خطر',badgeInfo:'ℹ️ مهم',emptyText:'ما لقينا والو',tipsTitle:'// نصائح مهمة',secNav:'📁 ملفات & تنقل',secNet:'🌐 شبكة',secSvc:'⚙️ إدارة السيرفيسات',secDisk:'💾 الأقراص & LVM',secUsr:'👤 المستخدمين',secProc:'⚡ البروسيسات',secPkg:'📦 إدارة الباكيجات',secPerm:'🔐 الصلاحيات'},
+  fr:{appTitle:'RedHat Guide',appSubtitle:'Guide des commandes Linux',searchPlaceholder:'Rechercher une commande...',statsText:'commandes disponibles',nav1:'Commandes',nav2:'Conseils',nav3:'À propos',modalTitle:'Choisir la langue',catAll:'🌐 Tout',catNav:'📁 Fichiers',catNet:'🌐 Réseau',catSvc:'⚙️ Services',catDisk:'💾 Disques',catUsr:'👤 Utilisateurs',catProc:'⚡ Processus',catPkg:'📦 Paquets',catPerm:'🔐 Permissions',syntaxLabel:'// Syntaxe',exampleLabel:'// Exemples',copyBtn:'📋 Copier',copiedBtn:'✅ Copié !',badgeDanger:'⚠️ Danger',badgeInfo:'ℹ️ Important',emptyText:'Aucun résultat trouvé',tipsTitle:'// Conseils importants',secNav:'📁 Fichiers & Navigation',secNet:'🌐 Réseau',secSvc:'⚙️ Gestion des Services',secDisk:'💾 Disques & LVM',secUsr:'👤 Utilisateurs',secProc:'⚡ Processus',secPkg:'📦 Gestion des Paquets',secPerm:'🔐 Permissions'},
+  en:{appTitle:'RedHat Guide',appSubtitle:'Linux Commands Reference',searchPlaceholder:'Search a command...',statsText:'commands available',nav1:'Commands',nav2:'Tips',nav3:'About',modalTitle:'Choose Language',catAll:'🌐 All',catNav:'📁 Files',catNet:'🌐 Network',catSvc:'⚙️ Services',catDisk:'💾 Disks',catUsr:'👤 Users',catProc:'⚡ Processes',catPkg:'📦 Packages',catPerm:'🔐 Permissions',syntaxLabel:'// Syntax',exampleLabel:'// Examples',copyBtn:'📋 Copy',copiedBtn:'✅ Copied!',badgeDanger:'⚠️ Danger',badgeInfo:'ℹ️ Important',emptyText:'No results found',tipsTitle:'// Important Tips',secNav:'📁 Files & Navigation',secNet:'🌐 Network',secSvc:'⚙️ Service Management',secDisk:'💾 Disks & LVM',secUsr:'👤 Users',secProc:'⚡ Processes',secPkg:'📦 Package Management',secPerm:'🔐 Permissions'}
+};
 
-  { cat: 'navigation', icon: '📁', color: '#1a2a3a', name: 'cd', short: 'التنقل بين المجلدات', badge: null,
-    desc: 'cd كيخليك تتنقل من مجلد لآخر. زعما كتمشي من غرفة لغرفة فالبيت.',
-    syntax: 'cd [chemin]',
-    examples: `cd /var/log           <span class="comment"># روح للمجلد /var/log</span>\ncd ..                 <span class="comment"># ارجع لمجلد أعلى</span>\ncd ~                  <span class="comment"># ارجع لمجلدك الشخصي</span>\ncd -                  <span class="comment"># ارجع للمجلد السابق</span>` },
-
-  { cat: 'navigation', icon: '📍', color: '#2a1a3a', name: 'pwd', short: 'عرض المسار الحالي', badge: null,
-    desc: 'pwd كيقوليك فين أنت دابا في النظام. مفيد إلا ضعتي!',
-    syntax: 'pwd',
-    examples: `pwd\n<span class="comment"># النتيجة: /home/utilisateur/documents</span>` },
-
-  { cat: 'navigation', icon: '📂', color: '#1a3a2a', name: 'mkdir', short: 'إنشاء مجلد جديد', badge: null,
-    desc: 'mkdir كيخليك تنشئ مجلد جديد. زعما كتبني غرفة جديدة فالبيت.',
-    syntax: 'mkdir [options] nom_dossier',
-    examples: `mkdir monDossier      <span class="comment"># إنشاء مجلد بسيط</span>\nmkdir -p a/b/c        <span class="comment"># إنشاء مجلدات متداخلة دفعة وحدة</span>\nmkdir -p /opt/app/{logs,config,data}  <span class="comment"># إنشاء عدة مجلدات</span>` },
-
-  { cat: 'navigation', icon: '🗑️', color: '#3a1a1a', name: 'rm', short: 'حذف ملف أو مجلد', badge: 'danger',
-    desc: 'rm كيمسح الملفات. انتبه! ما فيهاش Recycle Bin في Linux. اللي مسحتيه راه مسوح!',
-    syntax: 'rm [options] fichier',
-    examples: `rm fichier.txt        <span class="comment"># مسح ملف</span>\nrm -r dossier/        <span class="comment"># مسح مجلد بكل محتواه</span>\nrm -f fichier.txt     <span class="comment"># مسح بالقوة بدون سؤال</span>\n<span class="comment"># ⚠️ rm -rf / = كارثة! ما دريها ابداً!</span>` },
-
-  { cat: 'navigation', icon: '📄', color: '#1a2a2a', name: 'cp', short: 'نسخ ملف أو مجلد', badge: null,
-    desc: 'cp كينسخ ملفات ومجلدات من مكان لآخر.',
-    syntax: 'cp [options] source destination',
-    examples: `cp fichier.txt /tmp/  <span class="comment"># نسخ ملف للـ tmp</span>\ncp -r dossier/ /backup/  <span class="comment"># نسخ مجلد كامل</span>\ncp -p fichier.txt backup.txt  <span class="comment"># نسخ مع الحفاظ على الصلاحيات</span>` },
-
-  { cat: 'navigation', icon: '✂️', color: '#2a2a1a', name: 'mv', short: 'نقل أو إعادة تسمية', badge: null,
-    desc: 'mv كيشيل الملف من مكان ويحطه في آخر. كيستعمل أيضاً لإعادة التسمية.',
-    syntax: 'mv source destination',
-    examples: `mv fichier.txt /tmp/  <span class="comment"># نقل ملف</span>\nmv ancien.txt nouveau.txt  <span class="comment"># إعادة تسمية</span>\nmv dossier/ /opt/     <span class="comment"># نقل مجلد</span>` },
-
-  { cat: 'navigation', icon: '👁️', color: '#1a1a3a', name: 'cat', short: 'عرض محتوى ملف', badge: null,
-    desc: 'cat كيعرض ليك محتوى ملف مباشرة في الشاشة. مفيد للملفات الصغيرة.',
-    syntax: 'cat [options] fichier',
-    examples: `cat /etc/hostname      <span class="comment"># عرض اسم السيرفر</span>\ncat /etc/os-release    <span class="comment"># عرض إصدار Red Hat</span>\ncat fichier1 fichier2  <span class="comment"># عرض ملفين ببعضهم</span>` },
-
-  { cat: 'navigation', icon: '🔎', color: '#1a2a3a', name: 'grep', short: 'البحث في الملفات', badge: null,
-    desc: 'grep هو محرك البحث ديال Linux. كيبحث عن نص معين داخل ملف أو نتائج أمر.',
-    syntax: 'grep [options] "pattern" fichier',
-    examples: `grep "error" /var/log/messages  <span class="comment"># ابحث عن كلمة error</span>\ngrep -i "root" /etc/passwd      <span class="comment"># بحث بدون حساسية للحروف</span>\ngrep -r "nginx" /etc/           <span class="comment"># بحث داخل كل الملفات</span>\nps aux | grep httpd             <span class="comment"># ابحث في نتائج أمر آخر</span>` },
-
-  { cat: 'navigation', icon: '🔍', color: '#2a1a2a', name: 'find', short: 'البحث عن ملفات', badge: null,
-    desc: 'find كيبحث عن ملفات ومجلدات بناءً على الاسم أو الحجم أو التاريخ.',
-    syntax: 'find [chemin] [options]',
-    examples: `find / -name "httpd.conf"       <span class="comment"># ابحث عن ملف بالاسم</span>\nfind /var -name "*.log"         <span class="comment"># ابحث عن كل ملفات log</span>\nfind /tmp -mtime +7             <span class="comment"># ملفات أقدم من 7 أيام</span>` },
-
-  { cat: 'navigation', icon: '📝', color: '#1a3a3a', name: 'tail', short: 'عرض آخر سطور ملف', badge: null,
-    desc: 'tail كيعرض آخر سطور ملف. مفيد جداً لمراقبة الـ logs في وقت حقيقي!',
-    syntax: 'tail [options] fichier',
-    examples: `tail /var/log/messages          <span class="comment"># آخر 10 سطور</span>\ntail -n 50 /var/log/messages    <span class="comment"># آخر 50 سطر</span>\ntail -f /var/log/messages       <span class="comment"># مراقبة مباشرة (Ctrl+C باش توقف)</span>` },
-
-  { cat: 'navigation', icon: '📊', color: '#2a3a1a', name: 'head', short: 'عرض أول سطور ملف', badge: null,
-    desc: 'head كيعرض أول سطور ملف. عكس tail.',
-    syntax: 'head [options] fichier',
-    examples: `head /etc/passwd               <span class="comment"># أول 10 سطور</span>\nhead -n 5 /var/log/messages    <span class="comment"># أول 5 سطور فقط</span>` },
-
-  // RESEAU
-  { cat: 'reseau', icon: '🌐', color: '#1a2a3a', name: 'ip addr', short: 'عرض عناوين IP', badge: null,
-    desc: 'ip addr كيعرض ليك كل الـ interfaces الشبكة والـ IP ديالهم. بديل حديث لـ ifconfig.',
-    syntax: 'ip addr show',
-    examples: `ip addr show                   <span class="comment"># عرض كل الـ interfaces</span>\nip addr show ens33             <span class="comment"># عرض interface معين</span>\nip -4 addr                     <span class="comment"># عرض IPv4 فقط</span>` },
-
-  { cat: 'reseau', icon: '📡', color: '#1a3a2a', name: 'ping', short: 'اختبار الاتصال', badge: null,
-    desc: 'ping كيبعث رسالة لجهاز آخر ويشوف إذا كان يرد. زعما كتطرق الباب وتشوف فين كيجاوب.',
-    syntax: 'ping [options] hôte',
-    examples: `ping google.com                <span class="comment"># ping مستمر (Ctrl+C باش توقف)</span>\nping -c 4 8.8.8.8              <span class="comment"># ping 4 مرات فقط</span>\nping -c 3 192.168.1.1          <span class="comment"># ping الـ router</span>` },
-
-  { cat: 'reseau', icon: '🔌', color: '#2a1a3a', name: 'ss', short: 'عرض الـ ports المفتوحة', badge: null,
-    desc: 'ss كيعرض كل الـ connections والـ ports المفتوحة على السيرفر. بديل حديث لـ netstat.',
-    syntax: 'ss [options]',
-    examples: `ss -tlnp                       <span class="comment"># ports TCP المفتوحة مع البروسيس</span>\nss -ulnp                       <span class="comment"># ports UDP المفتوحة</span>\nss -s                          <span class="comment"># ملخص الـ connections</span>` },
-
-  { cat: 'reseau', icon: '⬇️', color: '#1a3a3a', name: 'curl', short: 'تحميل من الانترنت', badge: null,
-    desc: 'curl كيتواصل مع URLs. مفيد جداً للتحقق من APIs والمواقع من السطر الأوامر.',
-    syntax: 'curl [options] URL',
-    examples: `curl https://google.com        <span class="comment"># جلب محتوى موقع</span>\ncurl -I https://google.com     <span class="comment"># عرض الـ headers فقط</span>\ncurl -o fichier.zip URL        <span class="comment"># تحميل ملف</span>` },
-
-  { cat: 'reseau', icon: '🔧', color: '#2a2a3a', name: 'nmcli', short: 'إدارة الشبكة', badge: null,
-    desc: 'nmcli هو الأداة الرسمية لإدارة الشبكات في Red Hat. كيخليك تشغل وتوقف الـ connections.',
-    syntax: 'nmcli [options]',
-    examples: `nmcli device status            <span class="comment"># حالة كل الـ interfaces</span>\nnmcli connection show          <span class="comment"># عرض الـ connections</span>\nnmcli connection up eth0       <span class="comment"># تشغيل interface</span>\nnmcli connection down eth0     <span class="comment"># إيقاف interface</span>` },
-
-  // SERVICES
-  { cat: 'services', icon: '⚙️', color: '#2a2a1a', name: 'systemctl status', short: 'حالة سيرفيس', badge: null,
-    desc: 'systemctl status كيعرض ليك حالة أي سيرفيس: شغال ولا موقوف ولا فيه مشكل.',
-    syntax: 'systemctl status [service]',
-    examples: `systemctl status sshd          <span class="comment"># حالة SSH</span>\nsystemctl status httpd         <span class="comment"># حالة Apache</span>\nsystemctl status firewalld     <span class="comment"># حالة Firewall</span>` },
-
-  { cat: 'services', icon: '▶️', color: '#1a3a1a', name: 'systemctl start', short: 'تشغيل سيرفيس', badge: null,
-    desc: 'systemctl start كيبدأ تشغيل سيرفيس. ما كيحفظش التغيير بعد الإعادة.',
-    syntax: 'systemctl start [service]',
-    examples: `systemctl start sshd           <span class="comment"># تشغيل SSH</span>\nsystemctl start httpd          <span class="comment"># تشغيل Apache</span>\nsystemctl start nginx          <span class="comment"># تشغيل Nginx</span>` },
-
-  { cat: 'services', icon: '⏹️', color: '#3a1a1a', name: 'systemctl stop', short: 'إيقاف سيرفيس', badge: null,
-    desc: 'systemctl stop كيوقف سيرفيس شغال.',
-    syntax: 'systemctl stop [service]',
-    examples: `systemctl stop httpd           <span class="comment"># إيقاف Apache</span>\nsystemctl stop firewalld       <span class="comment"># إيقاف الـ Firewall</span>` },
-
-  { cat: 'services', icon: '🔄', color: '#1a2a3a', name: 'systemctl restart', short: 'إعادة تشغيل سيرفيس', badge: null,
-    desc: 'systemctl restart كيوقف السيرفيس ويعيد تشغيله. مفيد بعد تغيير الـ config.',
-    syntax: 'systemctl restart [service]',
-    examples: `systemctl restart sshd         <span class="comment"># إعادة تشغيل SSH</span>\nsystemctl restart httpd        <span class="comment"># إعادة تشغيل Apache</span>` },
-
-  { cat: 'services', icon: '🔁', color: '#2a1a3a', name: 'systemctl enable', short: 'تفعيل عند الإقلاع', badge: null,
-    desc: 'systemctl enable كيخلي السيرفيس يبدأ تلقائياً كل ما السيرفر دار restart.',
-    syntax: 'systemctl enable [service]',
-    examples: `systemctl enable sshd          <span class="comment"># SSH يبدأ تلقائياً</span>\nsystemctl enable --now httpd   <span class="comment"># تفعيل وتشغيل دفعة وحدة</span>` },
-
-  { cat: 'services', icon: '📋', color: '#1a3a2a', name: 'journalctl', short: 'عرض سجلات النظام', badge: null,
-    desc: 'journalctl كيعرض كل الـ logs الخاصة بالـ services والنظام.',
-    syntax: 'journalctl [options]',
-    examples: `journalctl -u sshd             <span class="comment"># logs SSH فقط</span>\njournalctl -f                  <span class="comment"># مراقبة logs مباشرة</span>\njournalctl --since "1 hour ago" <span class="comment"># logs الساعة الأخيرة</span>\njournalctl -xe                 <span class="comment"># logs الأخطاء الأخيرة</span>` },
-
-  // DISQUES
-  { cat: 'disques', icon: '💾', color: '#2a1a1a', name: 'df', short: 'مساحة الـ filesystem', badge: null,
-    desc: 'df كيعرض مساحة الأقراص المستعملة والمتاحة. مفيد جداً لمعرفة إذا كان القرص ممتلئ.',
-    syntax: 'df [options]',
-    examples: `df -h                          <span class="comment"># عرض بصيغة مقروءة (GB, MB)</span>\ndf -hT                         <span class="comment"># مع نوع الـ filesystem</span>\ndf -h /var                     <span class="comment"># مساحة مجلد معين فقط</span>` },
-
-  { cat: 'disques', icon: '📊', color: '#1a1a2a', name: 'du', short: 'حجم المجلدات', badge: null,
-    desc: 'du كيحسب المساحة اللي كيأخدها كل مجلد. مفيد باش تعرف شكون كيأكل المساحة.',
-    syntax: 'du [options] [chemin]',
-    examples: `du -sh /var/*                  <span class="comment"># حجم كل مجلد في /var</span>\ndu -sh /*                      <span class="comment"># حجم كل مجلد في /</span>\ndu -h --max-depth=1 /var       <span class="comment"># حجم بعمق مجلد واحد</span>` },
-
-  { cat: 'disques', icon: '🗂️', color: '#2a2a1a', name: 'lsblk', short: 'عرض الأقراص والـ partitions', badge: null,
-    desc: 'lsblk كيعرض كل الأقراص والـ partitions بشكل شجري. أول أمر تديه باش تفهم البنية.',
-    syntax: 'lsblk',
-    examples: `lsblk                          <span class="comment"># عرض كل الأقراص</span>\nlsblk -f                       <span class="comment"># مع نوع الـ filesystem</span>` },
-
-  { cat: 'disques', icon: '📦', color: '#1a3a1a', name: 'pvs / vgs / lvs', short: 'إدارة LVM', badge: null,
-    desc: 'هاد الأوامر الثلاثة للـ LVM: pvs للأقراص الفيزيائية، vgs للمجموعات، lvs للـ volumes المنطقية.',
-    syntax: 'pvs | vgs | lvs',
-    examples: `pvs                            <span class="comment"># الأقراص الفيزيائية</span>\nvgs                            <span class="comment"># مجموعات الـ volumes</span>\nlvs                            <span class="comment"># الـ volumes المنطقية</span>` },
-
-  { cat: 'disques', icon: '➕', color: '#1a2a1a', name: 'lvextend', short: 'توسيع filesystem', badge: 'info',
-    desc: 'lvextend كيزيد المساحة لـ filesystem موجود. بعده خاصك تدير xfs_growfs أو resize2fs.',
-    syntax: 'lvextend -L +[taille] [volume]',
-    examples: `lvextend -L +1G /dev/mapper/rhel-var  <span class="comment"># زيد 1GB</span>\nxfs_growfs /var                <span class="comment"># أعلم الـ filesystem (xfs)</span>\nresize2fs /dev/mapper/rhel-var <span class="comment"># أعلم الـ filesystem (ext4)</span>` },
-
-  // USERS
-  { cat: 'users', icon: '👤', color: '#2a1a2a', name: 'whoami', short: 'من أنا؟', badge: null,
-    desc: 'whoami كيعرض ليك اسم المستخدم الحالي اللي دخلت بيه.',
-    syntax: 'whoami',
-    examples: `whoami\n<span class="comment"># النتيجة: root أو essofi</span>` },
-
-  { cat: 'users', icon: '🆔', color: '#1a2a2a', name: 'id', short: 'معلومات المستخدم', badge: null,
-    desc: 'id كيعرض ليك UID و GID والـ groups اللي أنت فيهم.',
-    syntax: 'id [utilisateur]',
-    examples: `id                             <span class="comment"># معلوماتك أنت</span>\nid root                        <span class="comment"># معلومات root</span>\nid essofi                      <span class="comment"># معلومات مستخدم معين</span>` },
-
-  { cat: 'users', icon: '➕', color: '#1a3a1a', name: 'useradd', short: 'إضافة مستخدم', badge: null,
-    desc: 'useradd كيضيف مستخدم جديد للنظام.',
-    syntax: 'useradd [options] username',
-    examples: `useradd ahmed                  <span class="comment"># إضافة مستخدم بسيط</span>\nuseradd -m -s /bin/bash ahmed  <span class="comment"># مع مجلد شخصي وshell</span>\npasswd ahmed                   <span class="comment"># تعيين كلمة المرور</span>` },
-
-  { cat: 'users', icon: '🔑', color: '#2a2a1a', name: 'passwd', short: 'تغيير كلمة المرور', badge: null,
-    desc: 'passwd كيغير كلمة مرور مستخدم.',
-    syntax: 'passwd [utilisateur]',
-    examples: `passwd                         <span class="comment"># غير كلمة مرورك أنت</span>\npasswd ahmed                   <span class="comment"># غير كلمة مرور ahmed (كـ root)</span>` },
-
-  { cat: 'users', icon: '🦸', color: '#3a2a1a', name: 'sudo', short: 'تنفيذ كـ root', badge: 'info',
-    desc: 'sudo كيخليك تنفذ أمر بصلاحيات المدير (root) بدون ما تكون root دائماً.',
-    syntax: 'sudo [commande]',
-    examples: `sudo systemctl restart sshd    <span class="comment"># restart كـ root</span>\nsudo -i                        <span class="comment"># ادخل كـ root كامل</span>\nsudo su -                      <span class="comment"># تحول لـ root</span>` },
-
-  // PROCESS
-  { cat: 'process', icon: '⚡', color: '#2a2a1a', name: 'ps', short: 'عرض البروسيسات', badge: null,
-    desc: 'ps كيعرض البروسيسات الشغالة حالياً. ps aux هو الأكثر استعمالاً.',
-    syntax: 'ps [options]',
-    examples: `ps aux                         <span class="comment"># كل البروسيسات بالتفصيل</span>\nps aux | grep httpd            <span class="comment"># ابحث عن بروسيس معين</span>\nps -ef                         <span class="comment"># عرض آخر بصيغة أخرى</span>` },
-
-  { cat: 'process', icon: '📈', color: '#1a2a1a', name: 'top', short: 'مراقبة النظام مباشرة', badge: null,
-    desc: 'top كيعرض البروسيسات ومواردها في وقت حقيقي. زعما Task Manager في Windows.',
-    syntax: 'top',
-    examples: `top                            <span class="comment"># q باش تخرج</span>\ntop -u apache                  <span class="comment"># بروسيسات مستخدم معين</span>\n<span class="comment"># فداخل top: P=ترتيب CPU, M=ترتيب RAM, k=اقتل بروسيس</span>` },
-
-  { cat: 'process', icon: '❌', color: '#3a1a1a', name: 'kill', short: 'إيقاف بروسيس', badge: 'danger',
-    desc: 'kill كيوقف بروسيس عن طريق PID ديالو. استعمل kill -9 إذا ما بغاش يوقف.',
-    syntax: 'kill [signal] PID',
-    examples: `kill 1234                      <span class="comment"># إيقاف بروسيس بـ PID</span>\nkill -9 1234                   <span class="comment"># إيقاف قسري</span>\nkillall httpd                  <span class="comment"># إيقاف كل بروسيسات باسم</span>` },
-
-  { cat: 'process', icon: '🧠', color: '#1a1a3a', name: 'free', short: 'عرض استخدام RAM', badge: null,
-    desc: 'free كيعرض ليك المساحة الكاملة والمستعملة والحرة من RAM.',
-    syntax: 'free [options]',
-    examples: `free -h                        <span class="comment"># عرض بصيغة مقروءة</span>\nfree -m                        <span class="comment"># عرض بـ Megabytes</span>` },
-
-  // PAQUETS
-  { cat: 'paquets', icon: '📦', color: '#2a1a3a', name: 'dnf install', short: 'تثبيت برنامج', badge: null,
-    desc: 'dnf install كيثبت برامج وـ packages من الانترنت تلقائياً. هو المعيار في RHEL 8/9.',
-    syntax: 'dnf install [package]',
-    examples: `dnf install httpd              <span class="comment"># تثبيت Apache</span>\ndnf install -y nginx           <span class="comment"># تثبيت بدون سؤال</span>\ndnf install vim wget curl      <span class="comment"># تثبيت عدة برامج</span>` },
-
-  { cat: 'paquets', icon: '🔍', color: '#1a2a3a', name: 'dnf search', short: 'البحث عن برنامج', badge: null,
-    desc: 'dnf search كيبحث عن برنامج في المستودعات.',
-    syntax: 'dnf search [terme]',
-    examples: `dnf search nginx               <span class="comment"># البحث عن nginx</span>\ndnf info httpd                 <span class="comment"># معلومات تفصيلية عن برنامج</span>` },
-
-  { cat: 'paquets', icon: '🗑️', color: '#3a1a1a', name: 'dnf remove', short: 'حذف برنامج', badge: null,
-    desc: 'dnf remove كيحذف برنامج من النظام.',
-    syntax: 'dnf remove [package]',
-    examples: `dnf remove httpd               <span class="comment"># حذف Apache</span>` },
-
-  { cat: 'paquets', icon: '🔄', color: '#1a3a1a', name: 'dnf update', short: 'تحديث النظام', badge: null,
-    desc: 'dnf update كيحدث كل البرامج لآخر إصدار. مهم لأمان النظام.',
-    syntax: 'dnf update [package]',
-    examples: `dnf update                     <span class="comment"># تحديث كل شيء</span>\ndnf update httpd               <span class="comment"># تحديث برنامج معين</span>\ndnf check-update               <span class="comment"># شوف التحديثات المتاحة فقط</span>` },
-
-  // PERMISSIONS
-  { cat: 'permissions', icon: '🔐', color: '#2a2a2a', name: 'chmod', short: 'تغيير صلاحيات ملف', badge: null,
-    desc: 'chmod كيغير صلاحيات ملف: من يقدر يقرأه، يكتب فيه، أو ينفذه.',
-    syntax: 'chmod [permissions] fichier',
-    examples: `chmod 755 script.sh            <span class="comment"># rwxr-xr-x (سكريبت قابل للتنفيذ)</span>\nchmod 644 fichier.txt          <span class="comment"># rw-r--r-- (ملف عادي)</span>\nchmod +x script.sh             <span class="comment"># أضف صلاحية التنفيذ</span>\nchmod -R 755 dossier/          <span class="comment"># غير صلاحيات مجلد كامل</span>` },
-
-  { cat: 'permissions', icon: '👑', color: '#2a1a1a', name: 'chown', short: 'تغيير مالك الملف', badge: null,
-    desc: 'chown كيغير المالك والمجموعة ديال ملف أو مجلد.',
-    syntax: 'chown user:group fichier',
-    examples: `chown root:root fichier.txt    <span class="comment"># نسب الملف لـ root</span>\nchown apache:apache /var/www/  <span class="comment"># نسب لـ apache</span>\nchown -R apache /var/www/html/ <span class="comment"># غير المالك لكل الملفات</span>` },
-
-  { cat: 'permissions', icon: '🔥', color: '#3a1a2a', name: 'firewall-cmd', short: 'إدارة الـ Firewall', badge: 'info',
-    desc: 'firewall-cmd هو أداة إدارة الـ Firewall في Red Hat. كيفتح ويسكر الـ ports.',
-    syntax: 'firewall-cmd [options]',
-    examples: `firewall-cmd --list-all        <span class="comment"># عرض كل القواعد</span>\nfirewall-cmd --add-service=http --permanent  <span class="comment"># فتح HTTP</span>\nfirewall-cmd --add-port=8080/tcp --permanent <span class="comment"># فتح port معين</span>\nfirewall-cmd --reload          <span class="comment"># تطبيق التغييرات</span>` },
+const commands=[
+  {cat:'navigation',icon:'📋',color:'#1a3a1a',name:'ls',badge:null,
+   ar:{short:'عرض محتوى المجلد',desc:'ls كيعرض ليك كل الملفات والمجلدات اللي فداخل المجلد الحالي. هو أول أمر تتعلمه في Linux.'},
+   fr:{short:'Lister le contenu d\'un dossier',desc:'ls affiche tous les fichiers et dossiers dans le répertoire courant. C\'est la première commande à apprendre sous Linux.'},
+   en:{short:'List directory contents',desc:'ls displays all files and directories inside the current directory. It\'s the first command you\'ll learn in Linux.'},
+   syntax:'ls [options] [directory]',
+   examples:'ls                    <span class="comment"># basic list</span>\nls -l                 <span class="comment"># detailed with permissions</span>\nls -la                <span class="comment"># show hidden files</span>\nls -lh                <span class="comment"># human-readable sizes</span>\nls /var/log           <span class="comment"># specific directory</span>'},
+  {cat:'navigation',icon:'📁',color:'#1a2a3a',name:'cd',badge:null,
+   ar:{short:'التنقل بين المجلدات',desc:'cd كيخليك تتنقل من مجلد لآخر. زعما كتمشي من غرفة لغرفة فالبيت.'},
+   fr:{short:'Changer de répertoire',desc:'cd vous permet de naviguer entre les dossiers. Comme passer d\'une pièce à l\'autre dans une maison.'},
+   en:{short:'Change directory',desc:'cd lets you navigate between directories. Like moving from one room to another in a house.'},
+   syntax:'cd [path]',
+   examples:'cd /var/log           <span class="comment"># go to /var/log</span>\ncd ..                 <span class="comment"># go up one level</span>\ncd ~                  <span class="comment"># go to home directory</span>\ncd -                  <span class="comment"># go back to previous dir</span>'},
+  {cat:'navigation',icon:'📍',color:'#2a1a3a',name:'pwd',badge:null,
+   ar:{short:'عرض المسار الحالي',desc:'pwd كيقوليك فين أنت دابا في النظام. مفيد إلا ضعتي!'},
+   fr:{short:'Afficher le répertoire courant',desc:'pwd vous indique où vous êtes dans le système. Utile quand on est perdu !'},
+   en:{short:'Print working directory',desc:'pwd tells you where you currently are in the system. Useful when you\'re lost!'},
+   syntax:'pwd',examples:'pwd\n<span class="comment"># output: /home/user/documents</span>'},
+  {cat:'navigation',icon:'📂',color:'#1a3a2a',name:'mkdir',badge:null,
+   ar:{short:'إنشاء مجلد جديد',desc:'mkdir كيخليك تنشئ مجلد جديد. زعما كتبني غرفة جديدة فالبيت.'},
+   fr:{short:'Créer un nouveau dossier',desc:'mkdir crée un nouveau répertoire. Comme construire une nouvelle pièce dans la maison.'},
+   en:{short:'Create a new directory',desc:'mkdir creates a new directory. Like building a new room in a house.'},
+   syntax:'mkdir [options] directory_name',
+   examples:'mkdir myFolder        <span class="comment"># simple folder</span>\nmkdir -p a/b/c        <span class="comment"># nested folders</span>\nmkdir -p /opt/{logs,config,data}'},
+  {cat:'navigation',icon:'🗑️',color:'#3a1a1a',name:'rm',badge:'danger',
+   ar:{short:'حذف ملف أو مجلد',desc:'rm كيمسح الملفات. انتبه! ما فيهاش Recycle Bin في Linux. اللي مسحتيه راه مسوح!'},
+   fr:{short:'Supprimer un fichier/dossier',desc:'rm supprime des fichiers. Attention ! Il n\'y a pas de corbeille sous Linux. Ce qui est supprimé est perdu !'},
+   en:{short:'Remove files or directories',desc:'rm deletes files permanently. Warning! There is no Recycle Bin in Linux. Deleted files are gone forever!'},
+   syntax:'rm [options] file',
+   examples:'rm file.txt           <span class="comment"># delete a file</span>\nrm -r folder/         <span class="comment"># delete folder+contents</span>\nrm -f file.txt        <span class="comment"># force delete</span>\n<span class="comment"># ⚠️ NEVER run: rm -rf /</span>'},
+  {cat:'navigation',icon:'📄',color:'#1a2a2a',name:'cp',badge:null,
+   ar:{short:'نسخ ملف أو مجلد',desc:'cp كينسخ ملفات ومجلدات من مكان لآخر.'},
+   fr:{short:'Copier un fichier/dossier',desc:'cp copie des fichiers et dossiers d\'un endroit à un autre.'},
+   en:{short:'Copy files or directories',desc:'cp copies files and directories from one place to another.'},
+   syntax:'cp [options] source destination',
+   examples:'cp file.txt /tmp/      <span class="comment"># copy to /tmp</span>\ncp -r folder/ /backup/ <span class="comment"># copy directory</span>\ncp -p file.txt bak.txt <span class="comment"># preserve permissions</span>'},
+  {cat:'navigation',icon:'✂️',color:'#2a2a1a',name:'mv',badge:null,
+   ar:{short:'نقل أو إعادة تسمية',desc:'mv كيشيل الملف من مكان ويحطه في آخر. كيستعمل أيضاً لإعادة التسمية.'},
+   fr:{short:'Déplacer ou renommer',desc:'mv déplace un fichier ou le renomme.'},
+   en:{short:'Move or rename files',desc:'mv moves a file from one place to another. Also used to rename files.'},
+   syntax:'mv source destination',
+   examples:'mv file.txt /tmp/      <span class="comment"># move a file</span>\nmv old.txt new.txt     <span class="comment"># rename a file</span>\nmv folder/ /opt/       <span class="comment"># move a directory</span>'},
+  {cat:'navigation',icon:'👁️',color:'#1a1a3a',name:'cat',badge:null,
+   ar:{short:'عرض محتوى ملف',desc:'cat كيعرض ليك محتوى ملف مباشرة في الشاشة. مفيد للملفات الصغيرة.'},
+   fr:{short:'Afficher le contenu d\'un fichier',desc:'cat affiche le contenu d\'un fichier directement dans le terminal.'},
+   en:{short:'Display file contents',desc:'cat displays file contents directly in the terminal. Useful for small files.'},
+   syntax:'cat [options] file',
+   examples:'cat /etc/hostname       <span class="comment"># show server name</span>\ncat /etc/os-release    <span class="comment"># show RHEL version</span>\ncat file1 file2        <span class="comment"># show two files</span>'},
+  {cat:'navigation',icon:'🔎',color:'#1a2a3a',name:'grep',badge:null,
+   ar:{short:'البحث في الملفات',desc:'grep هو محرك البحث ديال Linux. كيبحث عن نص معين داخل ملف أو نتائج أمر.'},
+   fr:{short:'Rechercher dans les fichiers',desc:'grep est le moteur de recherche de Linux. Il cherche un texte dans un fichier ou dans les résultats d\'une commande.'},
+   en:{short:'Search in files',desc:'grep is Linux\'s search engine. It searches for a specific text inside files or command output.'},
+   syntax:'grep [options] "pattern" file',
+   examples:'grep "error" /var/log/messages  <span class="comment"># search for error</span>\ngrep -i "root" /etc/passwd      <span class="comment"># case-insensitive</span>\ngrep -r "nginx" /etc/           <span class="comment"># recursive search</span>\nps aux | grep httpd             <span class="comment"># pipe search</span>'},
+  {cat:'navigation',icon:'🔍',color:'#2a1a2a',name:'find',badge:null,
+   ar:{short:'البحث عن ملفات',desc:'find كيبحث عن ملفات ومجلدات بناءً على الاسم أو الحجم أو التاريخ.'},
+   fr:{short:'Rechercher des fichiers',desc:'find recherche des fichiers et dossiers selon leur nom, taille ou date.'},
+   en:{short:'Find files and directories',desc:'find searches for files and directories based on name, size, or date.'},
+   syntax:'find [path] [options]',
+   examples:'find / -name "httpd.conf"       <span class="comment"># find by name</span>\nfind /var -name "*.log"         <span class="comment"># find log files</span>\nfind /tmp -mtime +7             <span class="comment"># older than 7 days</span>'},
+  {cat:'navigation',icon:'📝',color:'#1a3a3a',name:'tail',badge:null,
+   ar:{short:'عرض آخر سطور ملف',desc:'tail كيعرض آخر سطور ملف. مفيد جداً لمراقبة الـ logs في وقت حقيقي!'},
+   fr:{short:'Afficher les dernières lignes',desc:'tail affiche les dernières lignes d\'un fichier. Très utile pour surveiller les logs en temps réel !'},
+   en:{short:'Show last lines of a file',desc:'tail shows the last lines of a file. Very useful for monitoring logs in real time!'},
+   syntax:'tail [options] file',
+   examples:'tail /var/log/messages          <span class="comment"># last 10 lines</span>\ntail -n 50 /var/log/messages    <span class="comment"># last 50 lines</span>\ntail -f /var/log/messages       <span class="comment"># live monitoring</span>'},
+  {cat:'navigation',icon:'📊',color:'#2a3a1a',name:'head',badge:null,
+   ar:{short:'عرض أول سطور ملف',desc:'head كيعرض أول سطور ملف. عكس tail.'},
+   fr:{short:'Afficher les premières lignes',desc:'head affiche les premières lignes d\'un fichier. L\'opposé de tail.'},
+   en:{short:'Show first lines of a file',desc:'head shows the first lines of a file. The opposite of tail.'},
+   syntax:'head [options] file',
+   examples:'head /etc/passwd               <span class="comment"># first 10 lines</span>\nhead -n 5 /var/log/messages    <span class="comment"># first 5 lines</span>'},
+  {cat:'reseau',icon:'🌐',color:'#1a2a3a',name:'ip addr',badge:null,
+   ar:{short:'عرض عناوين IP',desc:'ip addr كيعرض ليك كل الـ interfaces الشبكة والـ IP ديالهم. بديل حديث لـ ifconfig.'},
+   fr:{short:'Afficher les adresses IP',desc:'ip addr affiche toutes les interfaces réseau et leurs IPs. Remplace ifconfig.'},
+   en:{short:'Show IP addresses',desc:'ip addr shows all network interfaces and their IP addresses. Modern replacement for ifconfig.'},
+   syntax:'ip addr show',
+   examples:'ip addr show                   <span class="comment"># all interfaces</span>\nip addr show ens33             <span class="comment"># specific interface</span>\nip -4 addr                     <span class="comment"># IPv4 only</span>'},
+  {cat:'reseau',icon:'📡',color:'#1a3a2a',name:'ping',badge:null,
+   ar:{short:'اختبار الاتصال',desc:'ping كيبعث رسالة لجهاز آخر ويشوف إذا كان يرد. زعما كتطرق الباب وتشوف فين كيجاوب.'},
+   fr:{short:'Tester la connectivité',desc:'ping envoie un message à un hôte et vérifie s\'il répond. Comme frapper à une porte.'},
+   en:{short:'Test network connectivity',desc:'ping sends a message to a host and checks if it responds. Like knocking on a door.'},
+   syntax:'ping [options] host',
+   examples:'ping google.com                <span class="comment"># continuous (Ctrl+C stop)</span>\nping -c 4 8.8.8.8              <span class="comment"># ping 4 times</span>\nping -c 3 192.168.1.1          <span class="comment"># ping router</span>'},
+  {cat:'reseau',icon:'🔌',color:'#2a1a3a',name:'ss',badge:null,
+   ar:{short:'عرض الـ ports المفتوحة',desc:'ss كيعرض كل الـ connections والـ ports المفتوحة على السيرفر. بديل حديث لـ netstat.'},
+   fr:{short:'Afficher les ports ouverts',desc:'ss affiche toutes les connexions et ports ouverts. Remplace netstat.'},
+   en:{short:'Show open ports and connections',desc:'ss displays all connections and open ports. Modern replacement for netstat.'},
+   syntax:'ss [options]',
+   examples:'ss -tlnp                       <span class="comment"># TCP ports + process</span>\nss -ulnp                       <span class="comment"># UDP ports</span>\nss -s                          <span class="comment"># summary</span>'},
+  {cat:'reseau',icon:'⬇️',color:'#1a3a3a',name:'curl',badge:null,
+   ar:{short:'تحميل من الانترنت',desc:'curl كيتواصل مع URLs. مفيد جداً للتحقق من APIs والمواقع من السطر الأوامر.'},
+   fr:{short:'Transférer des données via URL',desc:'curl communique avec des URLs. Très utile pour tester des APIs depuis le terminal.'},
+   en:{short:'Transfer data from URLs',desc:'curl communicates with URLs. Very useful for testing APIs from the command line.'},
+   syntax:'curl [options] URL',
+   examples:'curl https://google.com        <span class="comment"># fetch a page</span>\ncurl -I https://google.com     <span class="comment"># headers only</span>\ncurl -o file.zip URL           <span class="comment"># download file</span>'},
+  {cat:'reseau',icon:'🔧',color:'#2a2a3a',name:'nmcli',badge:null,
+   ar:{short:'إدارة الشبكة',desc:'nmcli هو الأداة الرسمية لإدارة الشبكات في Red Hat.'},
+   fr:{short:'Gérer le réseau',desc:'nmcli est l\'outil officiel de gestion réseau sous Red Hat.'},
+   en:{short:'Manage network connections',desc:'nmcli is the official network management tool in Red Hat.'},
+   syntax:'nmcli [options]',
+   examples:'nmcli device status            <span class="comment"># all interfaces status</span>\nnmcli connection show          <span class="comment"># show connections</span>\nnmcli connection up eth0       <span class="comment"># enable interface</span>\nnmcli connection down eth0     <span class="comment"># disable interface</span>'},
+  {cat:'services',icon:'⚙️',color:'#2a2a1a',name:'systemctl status',badge:null,
+   ar:{short:'حالة سيرفيس',desc:'systemctl status كيعرض ليك حالة أي سيرفيس: شغال ولا موقوف ولا فيه مشكل.'},
+   fr:{short:'Statut d\'un service',desc:'systemctl status affiche l\'état d\'un service : en cours, arrêté ou en erreur.'},
+   en:{short:'Check service status',desc:'systemctl status shows the state of any service: running, stopped, or failed.'},
+   syntax:'systemctl status [service]',
+   examples:'systemctl status sshd          <span class="comment"># SSH status</span>\nsystemctl status httpd         <span class="comment"># Apache status</span>\nsystemctl status firewalld     <span class="comment"># Firewall status</span>'},
+  {cat:'services',icon:'▶️',color:'#1a3a1a',name:'systemctl start',badge:null,
+   ar:{short:'تشغيل سيرفيس',desc:'systemctl start كيبدأ تشغيل سيرفيس.'},
+   fr:{short:'Démarrer un service',desc:'systemctl start lance un service.'},
+   en:{short:'Start a service',desc:'systemctl start launches a service.'},
+   syntax:'systemctl start [service]',
+   examples:'systemctl start sshd           <span class="comment"># start SSH</span>\nsystemctl start httpd          <span class="comment"># start Apache</span>'},
+  {cat:'services',icon:'⏹️',color:'#3a1a1a',name:'systemctl stop',badge:null,
+   ar:{short:'إيقاف سيرفيس',desc:'systemctl stop كيوقف سيرفيس شغال.'},
+   fr:{short:'Arrêter un service',desc:'systemctl stop arrête un service en cours d\'exécution.'},
+   en:{short:'Stop a service',desc:'systemctl stop stops a running service.'},
+   syntax:'systemctl stop [service]',
+   examples:'systemctl stop httpd           <span class="comment"># stop Apache</span>\nsystemctl stop firewalld       <span class="comment"># stop Firewall</span>'},
+  {cat:'services',icon:'🔄',color:'#1a2a3a',name:'systemctl restart',badge:null,
+   ar:{short:'إعادة تشغيل سيرفيس',desc:'systemctl restart كيوقف السيرفيس ويعيد تشغيله. مفيد بعد تغيير الـ config.'},
+   fr:{short:'Redémarrer un service',desc:'systemctl restart arrête puis redémarre un service. Utile après modification de config.'},
+   en:{short:'Restart a service',desc:'systemctl restart stops then starts a service. Useful after config changes.'},
+   syntax:'systemctl restart [service]',
+   examples:'systemctl restart sshd         <span class="comment"># restart SSH</span>\nsystemctl restart httpd        <span class="comment"># restart Apache</span>'},
+  {cat:'services',icon:'🔁',color:'#2a1a3a',name:'systemctl enable',badge:null,
+   ar:{short:'تفعيل عند الإقلاع',desc:'systemctl enable كيخلي السيرفيس يبدأ تلقائياً كل ما السيرفر دار restart.'},
+   fr:{short:'Activer au démarrage',desc:'systemctl enable configure le service pour démarrer automatiquement à chaque reboot.'},
+   en:{short:'Enable service at boot',desc:'systemctl enable configures the service to start automatically at every reboot.'},
+   syntax:'systemctl enable [service]',
+   examples:'systemctl enable sshd          <span class="comment"># SSH starts at boot</span>\nsystemctl enable --now httpd   <span class="comment"># enable and start now</span>'},
+  {cat:'services',icon:'📋',color:'#1a3a2a',name:'journalctl',badge:null,
+   ar:{short:'عرض سجلات النظام',desc:'journalctl كيعرض كل الـ logs الخاصة بالـ services والنظام.'},
+   fr:{short:'Afficher les logs système',desc:'journalctl affiche tous les logs des services et du système.'},
+   en:{short:'View system logs',desc:'journalctl displays all logs from services and the system.'},
+   syntax:'journalctl [options]',
+   examples:'journalctl -u sshd             <span class="comment"># SSH logs only</span>\njournalctl -f                  <span class="comment"># live monitoring</span>\njournalctl --since "1 hour ago"<span class="comment"># last hour</span>\njournalctl -xe                 <span class="comment"># recent errors</span>'},
+  {cat:'disques',icon:'💾',color:'#2a1a1a',name:'df',badge:null,
+   ar:{short:'مساحة الـ filesystem',desc:'df كيعرض مساحة الأقراص المستعملة والمتاحة. مفيد جداً لمعرفة إذا كان القرص ممتلئ.'},
+   fr:{short:'Espace disque disponible',desc:'df affiche l\'espace utilisé et disponible. Très utile pour savoir si un disque est plein.'},
+   en:{short:'Disk space usage',desc:'df shows used and available disk space. Very useful for knowing if a disk is full.'},
+   syntax:'df [options]',
+   examples:'df -h                          <span class="comment"># human-readable (GB,MB)</span>\ndf -hT                         <span class="comment"># with filesystem type</span>\ndf -h /var                     <span class="comment"># specific directory</span>'},
+  {cat:'disques',icon:'📊',color:'#1a1a2a',name:'du',badge:null,
+   ar:{short:'حجم المجلدات',desc:'du كيحسب المساحة اللي كيأخدها كل مجلد. مفيد باش تعرف شكون كيأكل المساحة.'},
+   fr:{short:'Taille des répertoires',desc:'du calcule l\'espace occupé par chaque dossier. Utile pour trouver ce qui consomme de l\'espace.'},
+   en:{short:'Disk usage of directories',desc:'du calculates space used by each directory. Useful for finding what consumes disk space.'},
+   syntax:'du [options] [path]',
+   examples:'du -sh /var/*                  <span class="comment"># size of /var contents</span>\ndu -sh /*                      <span class="comment"># top-level sizes</span>\ndu -h --max-depth=1 /var       <span class="comment"># one level deep</span>'},
+  {cat:'disques',icon:'🗂️',color:'#2a2a1a',name:'lsblk',badge:null,
+   ar:{short:'عرض الأقراص والـ partitions',desc:'lsblk كيعرض كل الأقراص والـ partitions بشكل شجري.'},
+   fr:{short:'Lister les disques et partitions',desc:'lsblk affiche tous les disques et partitions sous forme d\'arbre.'},
+   en:{short:'List block devices',desc:'lsblk displays all disks and partitions in a tree format.'},
+   syntax:'lsblk',
+   examples:'lsblk                          <span class="comment"># all disks</span>\nlsblk -f                       <span class="comment"># with filesystem type</span>'},
+  {cat:'disques',icon:'📦',color:'#1a3a1a',name:'pvs / vgs / lvs',badge:null,
+   ar:{short:'إدارة LVM',desc:'هاد الأوامر الثلاثة للـ LVM: pvs للأقراص الفيزيائية، vgs للمجموعات، lvs للـ volumes المنطقية.'},
+   fr:{short:'Gestion LVM',desc:'Ces trois commandes gèrent le LVM : pvs disques physiques, vgs groupes, lvs volumes logiques.'},
+   en:{short:'LVM management commands',desc:'These three LVM commands: pvs for physical volumes, vgs for volume groups, lvs for logical volumes.'},
+   syntax:'pvs | vgs | lvs',
+   examples:'pvs                            <span class="comment"># physical volumes</span>\nvgs                            <span class="comment"># volume groups</span>\nlvs                            <span class="comment"># logical volumes</span>'},
+  {cat:'disques',icon:'➕',color:'#1a2a1a',name:'lvextend',badge:'info',
+   ar:{short:'توسيع filesystem',desc:'lvextend كيزيد المساحة لـ filesystem موجود. بعده خاصك تدير xfs_growfs أو resize2fs.'},
+   fr:{short:'Étendre un filesystem',desc:'lvextend augmente l\'espace d\'un filesystem. Ensuite il faut xfs_growfs ou resize2fs.'},
+   en:{short:'Extend a filesystem',desc:'lvextend increases filesystem space. Then run xfs_growfs or resize2fs to notify the FS.'},
+   syntax:'lvextend -L +[size] [volume]',
+   examples:'lvextend -L +1G /dev/mapper/rhel-var  <span class="comment"># add 1GB</span>\nxfs_growfs /var                <span class="comment"># notify FS (xfs)</span>\nresize2fs /dev/mapper/rhel-var <span class="comment"># notify FS (ext4)</span>'},
+  {cat:'users',icon:'👤',color:'#2a1a2a',name:'whoami',badge:null,
+   ar:{short:'من أنا؟',desc:'whoami كيعرض ليك اسم المستخدم الحالي اللي دخلت بيه.'},
+   fr:{short:'Qui suis-je ?',desc:'whoami affiche le nom de l\'utilisateur actuellement connecté.'},
+   en:{short:'Who am I?',desc:'whoami displays the name of the currently logged-in user.'},
+   syntax:'whoami',examples:'whoami\n<span class="comment"># output: root or essofi</span>'},
+  {cat:'users',icon:'🆔',color:'#1a2a2a',name:'id',badge:null,
+   ar:{short:'معلومات المستخدم',desc:'id كيعرض ليك UID و GID والـ groups اللي أنت فيهم.'},
+   fr:{short:'Informations utilisateur',desc:'id affiche l\'UID, le GID et les groupes de l\'utilisateur.'},
+   en:{short:'User identity information',desc:'id displays the UID, GID, and groups the user belongs to.'},
+   syntax:'id [user]',
+   examples:'id                             <span class="comment"># your own info</span>\nid root                        <span class="comment"># root info</span>'},
+  {cat:'users',icon:'➕',color:'#1a3a1a',name:'useradd',badge:null,
+   ar:{short:'إضافة مستخدم',desc:'useradd كيضيف مستخدم جديد للنظام.'},
+   fr:{short:'Ajouter un utilisateur',desc:'useradd ajoute un nouvel utilisateur au système.'},
+   en:{short:'Add a new user',desc:'useradd adds a new user to the system.'},
+   syntax:'useradd [options] username',
+   examples:'useradd ahmed                  <span class="comment"># basic user</span>\nuseradd -m -s /bin/bash ahmed  <span class="comment"># with home+shell</span>\npasswd ahmed                   <span class="comment"># set password</span>'},
+  {cat:'users',icon:'🔑',color:'#2a2a1a',name:'passwd',badge:null,
+   ar:{short:'تغيير كلمة المرور',desc:'passwd كيغير كلمة مرور مستخدم.'},
+   fr:{short:'Changer le mot de passe',desc:'passwd change le mot de passe d\'un utilisateur.'},
+   en:{short:'Change user password',desc:'passwd changes a user\'s password.'},
+   syntax:'passwd [user]',
+   examples:'passwd                         <span class="comment"># change own password</span>\npasswd ahmed                   <span class="comment"># change ahmed\'s password</span>'},
+  {cat:'users',icon:'🦸',color:'#3a2a1a',name:'sudo',badge:'info',
+   ar:{short:'تنفيذ كـ root',desc:'sudo كيخليك تنفذ أمر بصلاحيات المدير (root) بدون ما تكون root دائماً.'},
+   fr:{short:'Exécuter en tant que root',desc:'sudo exécute une commande avec les droits administrateur sans être connecté en root.'},
+   en:{short:'Execute as root',desc:'sudo executes a command with administrator privileges without being permanently logged in as root.'},
+   syntax:'sudo [command]',
+   examples:'sudo systemctl restart sshd    <span class="comment"># restart as root</span>\nsudo -i                        <span class="comment"># become root</span>\nsudo su -                      <span class="comment"># switch to root</span>'},
+  {cat:'process',icon:'⚡',color:'#2a2a1a',name:'ps',badge:null,
+   ar:{short:'عرض البروسيسات',desc:'ps كيعرض البروسيسات الشغالة حالياً. ps aux هو الأكثر استعمالاً.'},
+   fr:{short:'Lister les processus',desc:'ps affiche les processus en cours. ps aux est la forme la plus utilisée.'},
+   en:{short:'List running processes',desc:'ps displays currently running processes. ps aux is the most commonly used form.'},
+   syntax:'ps [options]',
+   examples:'ps aux                         <span class="comment"># all processes</span>\nps aux | grep httpd            <span class="comment"># find process</span>\nps -ef                         <span class="comment"># alternative format</span>'},
+  {cat:'process',icon:'📈',color:'#1a2a1a',name:'top',badge:null,
+   ar:{short:'مراقبة النظام مباشرة',desc:'top كيعرض البروسيسات ومواردها في وقت حقيقي. زعما Task Manager في Windows.'},
+   fr:{short:'Surveiller le système en direct',desc:'top affiche les processus en temps réel. Comme le Gestionnaire des tâches Windows.'},
+   en:{short:'Real-time system monitor',desc:'top displays processes and resources in real time. Like Windows Task Manager.'},
+   syntax:'top',
+   examples:'top                            <span class="comment"># q to quit</span>\ntop -u apache                  <span class="comment"># filter by user</span>\n<span class="comment"># P=sort CPU, M=sort RAM, k=kill</span>'},
+  {cat:'process',icon:'❌',color:'#3a1a1a',name:'kill',badge:'danger',
+   ar:{short:'إيقاف بروسيس',desc:'kill كيوقف بروسيس عن طريق PID ديالو. استعمل kill -9 إذا ما بغاش يوقف.'},
+   fr:{short:'Tuer un processus',desc:'kill arrête un processus par son PID. Utilisez kill -9 s\'il refuse de s\'arrêter.'},
+   en:{short:'Kill a process',desc:'kill stops a process by its PID. Use kill -9 if it refuses to stop.'},
+   syntax:'kill [signal] PID',
+   examples:'kill 1234                      <span class="comment"># stop by PID</span>\nkill -9 1234                   <span class="comment"># force kill</span>\nkillall httpd                  <span class="comment"># kill by name</span>'},
+  {cat:'process',icon:'🧠',color:'#1a1a3a',name:'free',badge:null,
+   ar:{short:'عرض استخدام RAM',desc:'free كيعرض ليك المساحة الكاملة والمستعملة والحرة من RAM.'},
+   fr:{short:'Utilisation de la RAM',desc:'free affiche la mémoire totale, utilisée et disponible.'},
+   en:{short:'Display RAM usage',desc:'free shows total, used, and available memory (RAM).'},
+   syntax:'free [options]',
+   examples:'free -h                        <span class="comment"># human-readable</span>\nfree -m                        <span class="comment"># in Megabytes</span>'},
+  {cat:'paquets',icon:'📦',color:'#2a1a3a',name:'dnf install',badge:null,
+   ar:{short:'تثبيت برنامج',desc:'dnf install كيثبت برامج وـ packages من الانترنت تلقائياً. هو المعيار في RHEL 8/9.'},
+   fr:{short:'Installer un paquet',desc:'dnf install installe des programmes depuis internet. C\'est le standard sous RHEL 8/9.'},
+   en:{short:'Install a package',desc:'dnf install installs software packages from the internet. The standard in RHEL 8/9.'},
+   syntax:'dnf install [package]',
+   examples:'dnf install httpd              <span class="comment"># install Apache</span>\ndnf install -y nginx           <span class="comment"># no prompt</span>\ndnf install vim wget curl      <span class="comment"># multiple packages</span>'},
+  {cat:'paquets',icon:'🔍',color:'#1a2a3a',name:'dnf search',badge:null,
+   ar:{short:'البحث عن برنامج',desc:'dnf search كيبحث عن برنامج في المستودعات.'},
+   fr:{short:'Rechercher un paquet',desc:'dnf search cherche un programme dans les dépôts.'},
+   en:{short:'Search for a package',desc:'dnf search looks for a program in the repositories.'},
+   syntax:'dnf search [term]',
+   examples:'dnf search nginx               <span class="comment"># search nginx</span>\ndnf info httpd                 <span class="comment"># detailed info</span>'},
+  {cat:'paquets',icon:'🗑️',color:'#3a1a1a',name:'dnf remove',badge:null,
+   ar:{short:'حذف برنامج',desc:'dnf remove كيحذف برنامج من النظام.'},
+   fr:{short:'Supprimer un paquet',desc:'dnf remove désinstalle un programme du système.'},
+   en:{short:'Remove a package',desc:'dnf remove uninstalls a package from the system.'},
+   syntax:'dnf remove [package]',
+   examples:'dnf remove httpd               <span class="comment"># remove Apache</span>'},
+  {cat:'paquets',icon:'🔄',color:'#1a3a1a',name:'dnf update',badge:null,
+   ar:{short:'تحديث النظام',desc:'dnf update كيحدث كل البرامج لآخر إصدار. مهم لأمان النظام.'},
+   fr:{short:'Mettre à jour le système',desc:'dnf update met à jour tous les programmes. Important pour la sécurité du système.'},
+   en:{short:'Update the system',desc:'dnf update upgrades all packages to their latest version. Important for security.'},
+   syntax:'dnf update [package]',
+   examples:'dnf update                     <span class="comment"># update everything</span>\ndnf update httpd               <span class="comment"># update specific pkg</span>\ndnf check-update               <span class="comment"># check only</span>'},
+  {cat:'permissions',icon:'🔐',color:'#2a2a2a',name:'chmod',badge:null,
+   ar:{short:'تغيير صلاحيات ملف',desc:'chmod كيغير صلاحيات ملف: من يقدر يقرأه، يكتب فيه، أو ينفذه.'},
+   fr:{short:'Modifier les permissions',desc:'chmod modifie les permissions d\'un fichier : qui peut lire, écrire ou exécuter.'},
+   en:{short:'Change file permissions',desc:'chmod changes file permissions: who can read, write, or execute it.'},
+   syntax:'chmod [permissions] file',
+   examples:'chmod 755 script.sh            <span class="comment"># rwxr-xr-x</span>\nchmod 644 file.txt             <span class="comment"># rw-r--r--</span>\nchmod +x script.sh             <span class="comment"># add execute</span>\nchmod -R 755 folder/           <span class="comment"># recursive</span>'},
+  {cat:'permissions',icon:'👑',color:'#2a1a1a',name:'chown',badge:null,
+   ar:{short:'تغيير مالك الملف',desc:'chown كيغير المالك والمجموعة ديال ملف أو مجلد.'},
+   fr:{short:'Changer le propriétaire',desc:'chown modifie le propriétaire et le groupe d\'un fichier ou répertoire.'},
+   en:{short:'Change file ownership',desc:'chown changes the owner and group of a file or directory.'},
+   syntax:'chown user:group file',
+   examples:'chown root:root file.txt        <span class="comment"># assign to root</span>\nchown apache:apache /var/www/   <span class="comment"># assign to apache</span>\nchown -R apache /var/www/html/  <span class="comment"># recursive</span>'},
+  {cat:'permissions',icon:'🔥',color:'#3a1a2a',name:'firewall-cmd',badge:'info',
+   ar:{short:'إدارة الـ Firewall',desc:'firewall-cmd هو أداة إدارة الـ Firewall في Red Hat. كيفتح ويسكر الـ ports.'},
+   fr:{short:'Gérer le pare-feu',desc:'firewall-cmd est l\'outil de gestion du pare-feu sous Red Hat. Il ouvre et ferme les ports.'},
+   en:{short:'Manage the firewall',desc:'firewall-cmd is Red Hat\'s firewall management tool. It opens and closes ports.'},
+   syntax:'firewall-cmd [options]',
+   examples:'firewall-cmd --list-all        <span class="comment"># show all rules</span>\nfirewall-cmd --add-service=http --permanent\nfirewall-cmd --add-port=8080/tcp --permanent\nfirewall-cmd --reload          <span class="comment"># apply changes</span>'}
 ];
 
-let currentCat = 'all';
-let currentSearch = '';
+const tipsData={
+  ar:[{icon:'⚠️',title:'انتبه من rm -rf',text:'هاد الأمر كيمسح كل شيء بدون رجعة. دير backup قبل أي حاجة.'},{icon:'💡',title:'Tab = إكمال تلقائي',text:'كتبت نص الأمر؟ دوز Tab وLinux غادي يكمله عليك.'},{icon:'🔍',title:'man = دليل كل أمر',text:'ما عارفتيش واش كيدير أمر؟ كتب man ls وغادي تلقى كل شيء.'},{icon:'🕐',title:'history = تاريخ الأوامر',text:'كتب history باش تشوف كل الأوامر اللي درتيها. Ctrl+R باش تبحث.'},{icon:'🛡️',title:'sudo = صلاحيات root',text:'كل أمر خطير يحتاج sudo قبله. كيعطيك صلاحيات المدير مؤقتاً.'},{icon:'📋',title:'Ctrl+C = إيقاف أمر',text:'أمر عالق ماشي؟ دوز Ctrl+C باش توقفه فوراً.'},{icon:'🔗',title:'Pipe | = ربط الأوامر',text:'كتقدر تربط أوامر: ps aux | grep nginx كيقلب على nginx فقط.'},{icon:'📁',title:'~ = مجلدك الشخصي',text:'~ كتعني /home/يوزرنيمك. كتقدر تكتب cd ~ باش ترجع للبيت.'}],
+  fr:[{icon:'⚠️',title:'Attention à rm -rf',text:'Cette commande supprime tout sans retour. Faites toujours un backup avant.'},{icon:'💡',title:'Tab = autocomplétion',text:'Commencé à taper ? Appuyez Tab et Linux complète automatiquement.'},{icon:'🔍',title:'man = manuel de commande',text:'Vous ne savez pas ce que fait une commande ? Tapez man ls.'},{icon:'🕐',title:'history = historique',text:'Tapez history pour voir toutes les commandes. Ctrl+R pour chercher.'},{icon:'🛡️',title:'sudo = droits root',text:'Toute commande dangereuse nécessite sudo. Droits admin temporaires.'},{icon:'📋',title:'Ctrl+C = arrêter',text:'Commande bloquée ? Ctrl+C pour l\'arrêter immédiatement.'},{icon:'🔗',title:'Pipe | = chaîner',text:'ps aux | grep nginx affiche uniquement les processus nginx.'},{icon:'📁',title:'~ = dossier personnel',text:'~ = /home/votre_nom. cd ~ pour rentrer à la maison.'}],
+  en:[{icon:'⚠️',title:'Beware of rm -rf',text:'This command deletes everything permanently. Always make a backup first.'},{icon:'💡',title:'Tab = autocompletion',text:'Started typing? Press Tab and Linux completes it automatically.'},{icon:'🔍',title:'man = command manual',text:'Don\'t know what a command does? Type man ls to find out.'},{icon:'🕐',title:'history = command history',text:'Type history to see all executed commands. Ctrl+R to search.'},{icon:'🛡️',title:'sudo = root privileges',text:'Every dangerous command needs sudo. Grants admin rights temporarily.'},{icon:'📋',title:'Ctrl+C = stop command',text:'Command stuck? Press Ctrl+C to stop it immediately.'},{icon:'🔗',title:'Pipe | = chain commands',text:'ps aux | grep nginx shows only nginx processes.'},{icon:'📁',title:'~ = home directory',text:'~ means /home/your_username. cd ~ to go home anytime.'}]
+};
 
-function renderCommands() {
-  const list = document.getElementById('commandList');
-  let filtered = commands.filter(c => {
-    const matchCat = currentCat === 'all' || c.cat === currentCat;
-    const matchSearch = !currentSearch ||
-      c.name.toLowerCase().includes(currentSearch) ||
-      c.short.toLowerCase().includes(currentSearch) ||
-      c.desc.toLowerCase().includes(currentSearch);
-    return matchCat && matchSearch;
+const aboutData={
+  ar:[{title:'🎯 علاش هاد التطبيق؟',text:'هاد الدليل مصمم للمبتدئين اللي بغاو يتعلمو Red Hat Linux بطريقة سهلة ومفهومة.'},{title:'📊 إحصائيات',text:'✅ +60 أمر موثق\n✅ أمثلة عملية لكل أمر\n✅ يشتغل بدون انترنت\n✅ 3 لغات: دارجة، فرنسي، إنجليزي\n✅ مجاني 100%'},{title:'🚀 نصيحة',text:'أحسن طريقة تتعلم هي التطبيق العملي على KillerCoda.com مجاناً.'}],
+  fr:[{title:'🎯 Pourquoi cette app ?',text:'Ce guide est conçu pour les débutants qui veulent apprendre Red Hat Linux simplement.'},{title:'📊 Statistiques',text:'✅ +60 commandes documentées\n✅ Exemples pratiques\n✅ Fonctionne hors ligne\n✅ 3 langues : Darija, Français, Anglais\n✅ 100% gratuit'},{title:'🚀 Conseil',text:'La meilleure façon d\'apprendre est la pratique sur KillerCoda.com gratuitement.'}],
+  en:[{title:'🎯 Why this app?',text:'This guide is designed for beginners who want to learn Red Hat Linux in a clear way.'},{title:'📊 Stats',text:'✅ 60+ documented commands\n✅ Practical examples\n✅ Works offline\n✅ 3 languages: Darija, French, English\n✅ 100% free'},{title:'🚀 Tip',text:'The best way to learn is practice. Try every command on KillerCoda.com for free.'}]
+};
+
+let currentLang=localStorage.getItem('lang')||'ar';
+let currentCat='all';
+let currentSearch='';
+
+function openLangModal(){document.getElementById('langModal').classList.add('open');}
+function closeLangModal(){document.getElementById('langModal').classList.remove('open');}
+function closeLangModalOutside(e){if(e.target===document.getElementById('langModal'))closeLangModal();}
+function setLang(l){currentLang=l;localStorage.setItem('lang',l);closeLangModal();applyLang();}
+
+function applyLang(){
+  const t=T[currentLang];
+  const flags={ar:'🇲🇦',fr:'🇫🇷',en:'🇬🇧'};
+  const codes={ar:'AR',fr:'FR',en:'EN'};
+  document.getElementById('appTitle').textContent=t.appTitle;
+  document.getElementById('appSubtitle').textContent=t.appSubtitle;
+  document.getElementById('currentLangFlag').textContent=flags[currentLang];
+  document.getElementById('currentLangCode').textContent=codes[currentLang];
+  document.getElementById('searchInput').placeholder=t.searchPlaceholder;
+  document.getElementById('statsText').textContent=t.statsText;
+  document.getElementById('nav1Text').textContent=t.nav1;
+  document.getElementById('nav2Text').textContent=t.nav2;
+  document.getElementById('nav3Text').textContent=t.nav3;
+  document.getElementById('modalTitle').textContent=t.modalTitle;
+  ['ar','fr','en'].forEach(l=>{
+    document.getElementById('check-'+l).style.display=l===currentLang?'block':'none';
+    document.getElementById('opt-'+l).classList.toggle('selected',l===currentLang);
   });
+  document.body.style.direction=currentLang==='ar'?'rtl':'ltr';
+  document.documentElement.lang=currentLang;
+  renderCatBar();renderCommands();renderTips();renderAbout();
+}
 
-  document.getElementById('cmdCount').textContent = filtered.length;
+function renderCatBar(){
+  const t=T[currentLang];
+  const cats=[['all',t.catAll],['navigation',t.catNav],['reseau',t.catNet],['services',t.catSvc],['disques',t.catDisk],['users',t.catUsr],['process',t.catProc],['paquets',t.catPkg],['permissions',t.catPerm]];
+  document.getElementById('catBar').innerHTML=cats.map(([id,label])=>`<button class="cat-btn${currentCat===id?' active':''}" onclick="filterCat('${id}',this)">${label}</button>`).join('');
+}
 
-  if (filtered.length === 0) {
-    list.innerHTML = `<div class="empty"><div>🔍</div>ما لقينا والو<br><small style="font-size:0.8rem">جرب كلمة أخرى</small></div>`;
-    return;
-  }
-
-  // Group by category
-  const groups = {};
-  const catNames = {
-    navigation: '📁 ملفات & تنقل',
-    reseau: '🌐 شبكة',
-    services: '⚙️ إدارة السيرفيسات',
-    disques: '💾 الأقراص & LVM',
-    users: '👤 المستخدمين',
-    process: '⚡ البروسيسات',
-    paquets: '📦 إدارة الباكيجات',
-    permissions: '🔐 الصلاحيات'
-  };
-
-  filtered.forEach(c => {
-    if (!groups[c.cat]) groups[c.cat] = [];
-    groups[c.cat].push(c);
+function renderCommands(){
+  const t=T[currentLang];
+  const list=document.getElementById('commandList');
+  const filtered=commands.filter(c=>{
+    const d=c[currentLang];
+    const matchCat=currentCat==='all'||c.cat===currentCat;
+    const q=currentSearch;
+    const matchSearch=!q||c.name.toLowerCase().includes(q)||d.short.toLowerCase().includes(q)||d.desc.toLowerCase().includes(q);
+    return matchCat&&matchSearch;
   });
-
-  let html = '';
-  let delay = 0;
-
-  if (currentCat !== 'all' || currentSearch) {
-    filtered.forEach((c, i) => { html += cardHTML(c, i * 50); });
-  } else {
-    Object.keys(groups).forEach(cat => {
-      html += `<div class="section-title">${catNames[cat] || cat}</div>`;
-      groups[cat].forEach((c, i) => { html += cardHTML(c, delay); delay += 30; });
+  document.getElementById('cmdCount').textContent=filtered.length;
+  if(!filtered.length){list.innerHTML=`<div class="empty"><div>🔍</div>${t.emptyText}</div>`;return;}
+  const catLabels={navigation:t.secNav,reseau:t.secNet,services:t.secSvc,disques:t.secDisk,users:t.secUsr,process:t.secProc,paquets:t.secPkg,permissions:t.secPerm};
+  let html='',delay=0;
+  if(currentCat!=='all'||currentSearch){
+    filtered.forEach((c,i)=>{html+=cardHTML(c,i*40,t);});
+  }else{
+    const groups={};
+    filtered.forEach(c=>{if(!groups[c.cat])groups[c.cat]=[];groups[c.cat].push(c);});
+    Object.keys(groups).forEach(cat=>{
+      html+=`<div class="section-title">${catLabels[cat]||cat}</div>`;
+      groups[cat].forEach(c=>{html+=cardHTML(c,delay,t);delay+=25;});
     });
   }
-
-  list.innerHTML = html;
+  list.innerHTML=html;
 }
 
-function cardHTML(c, delay) {
-  const badge = c.badge === 'danger'
-    ? `<span class="badge badge-danger">⚠️ خطر</span>`
-    : c.badge === 'info'
-    ? `<span class="badge badge-info">ℹ️ مهم</span>`
-    : '';
-
-  return `
-    <div class="cmd-card" id="card-${c.name.replace(/\s/g,'-')}" style="animation-delay:${delay}ms">
-      <div class="cmd-header" onclick="toggleCard('${c.name.replace(/\s/g,'-')}')">
-        <div class="cmd-icon" style="background:${c.color}">${c.icon}</div>
-        <div class="cmd-info">
-          <div class="cmd-name">${c.name}</div>
-          <div class="cmd-short">${c.short}</div>
-        </div>
-        ${badge}
-        <span class="cmd-arrow">▼</span>
-      </div>
-      <div class="cmd-body">
-        <div class="cmd-desc">${c.desc}</div>
-        <div class="cmd-label">// الصيغة</div>
-        <div class="cmd-syntax">${c.syntax}</div>
-        <div class="cmd-label">// أمثلة</div>
-        <div class="cmd-example">${c.examples}</div>
-        <button class="copy-btn" onclick="copyCmd('${c.name}', this)">📋 نسخ الأمر</button>
-      </div>
-    </div>`;
+function cardHTML(c,delay,t){
+  const d=c[currentLang];
+  const badge=c.badge==='danger'?`<span class="badge badge-danger">${t.badgeDanger}</span>`:c.badge==='info'?`<span class="badge badge-info">${t.badgeInfo}</span>`:'';
+  const id=c.name.replace(/[\s\/]/g,'-');
+  return`<div class="cmd-card" id="card-${id}" style="animation-delay:${delay}ms">
+    <div class="cmd-header" onclick="toggleCard('${id}')">
+      <div class="cmd-icon" style="background:${c.color}">${c.icon}</div>
+      <div class="cmd-info"><div class="cmd-name">${c.name}</div><div class="cmd-short">${d.short}</div></div>
+      ${badge}<span class="cmd-arrow">▼</span>
+    </div>
+    <div class="cmd-body">
+      <div class="cmd-desc">${d.desc}</div>
+      <div class="cmd-label">${t.syntaxLabel}</div>
+      <div class="cmd-syntax">${c.syntax}</div>
+      <div class="cmd-label">${t.exampleLabel}</div>
+      <div class="cmd-example">${c.examples}</div>
+      <button class="copy-btn" onclick="copyCmd('${c.name}',this)">${t.copyBtn}</button>
+    </div>
+  </div>`;
 }
 
-function toggleCard(id) {
-  const card = document.getElementById('card-' + id);
-  const wasOpen = card.classList.contains('open');
-  document.querySelectorAll('.cmd-card.open').forEach(c => c.classList.remove('open'));
-  if (!wasOpen) {
-    card.classList.add('open');
-    setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
-  }
+function renderTips(){
+  const t=T[currentLang];
+  const tips=tipsData[currentLang];
+  let html=`<div class="section-title" style="margin:0 16px">${t.tipsTitle}</div>`;
+  tips.forEach(tip=>{html+=`<div class="tip-card"><div class="tip-icon">${tip.icon}</div><h4>${tip.title}</h4><p>${tip.text}</p></div>`;});
+  document.getElementById('tipsContent').innerHTML=html;
 }
 
-function filterCat(cat, btn) {
-  currentCat = cat;
-  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+function renderAbout(){
+  const items=aboutData[currentLang];
+  let html=`<div class="about-card" style="text-align:center;background:linear-gradient(135deg,#1a0000,#0a0a0a)">
+    <svg width="65" height="65" viewBox="0 0 100 100" style="margin:0 auto 10px"><circle cx="50" cy="50" r="48" fill="#cc0000"/><path d="M50 15C30 15 15 30 15 50C15 70 30 85 50 85C70 85 85 70 85 50C85 30 70 15 50 15Z" fill="#aa0000"/><path d="M35 35L50 20L65 35L65 55Q65 68 50 75Q35 68 35 55Z" fill="white" opacity="0.95"/><path d="M42 48L50 32L58 48L55 48L55 62L45 62L45 48Z" fill="#cc0000"/></svg>
+    <h2 style="color:#fff;font-size:1.3rem">RedHat Guide</h2>
+    <p style="color:var(--red-light);font-size:0.78rem;font-family:'JetBrains Mono',monospace">v2.0 — 🇲🇦 🇫🇷 🇬🇧</p>
+  </div>`;
+  items.forEach(item=>{html+=`<div class="about-card"><h3>${item.title}</h3><p>${item.text.replace(/\n/g,'<br>')}</p></div>`;});
+  document.getElementById('aboutContent').innerHTML=html;
+}
+
+function toggleCard(id){
+  const card=document.getElementById('card-'+id);
+  const wasOpen=card.classList.contains('open');
+  document.querySelectorAll('.cmd-card.open').forEach(c=>c.classList.remove('open'));
+  if(!wasOpen){card.classList.add('open');setTimeout(()=>card.scrollIntoView({behavior:'smooth',block:'nearest'}),100);}
+}
+
+function filterCat(cat,btn){
+  currentCat=cat;
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
   renderCommands();
 }
 
-function filterCommands() {
-  currentSearch = document.getElementById('searchInput').value.toLowerCase();
+function filterCommands(){
+  currentSearch=document.getElementById('searchInput').value.toLowerCase();
   renderCommands();
 }
 
-function copyCmd(name, btn) {
-  navigator.clipboard.writeText(name).then(() => {
-    btn.textContent = '✅ تم النسخ!';
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = '📋 نسخ الأمر'; btn.classList.remove('copied'); }, 2000);
+function copyCmd(name,btn){
+  navigator.clipboard.writeText(name).then(()=>{
+    const t=T[currentLang];
+    btn.textContent=t.copiedBtn;btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent=t.copyBtn;btn.classList.remove('copied');},2000);
   });
 }
 
-function showPage(name) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  document.getElementById('nav-' + name).classList.add('active');
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.getElementById('nav-'+name).classList.add('active');
 }
 
-// Init
-renderCommands();
+applyLang();
 </script>
 </body>
 </html>
