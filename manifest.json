@@ -1,15 +1,26 @@
 {
-  "name": "RedHat Darija",
+  "name": "RedHat Darija - دليل الأوامر",
   "short_name": "RH Darija",
-  "start_url": "/index.html",
+  "description": "دليل Red Hat Linux بالدارجة المغربية للمبتدئين",
+  "start_url": "/redhat/index.html",
+  "scope": "/redhat/",
   "display": "standalone",
-  "background_color": "#cc0000",
+  "orientation": "portrait",
+  "background_color": "#0f0f0f",
   "theme_color": "#cc0000",
+  "lang": "ar",
   "icons": [
     {
-      "src": "icon.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
