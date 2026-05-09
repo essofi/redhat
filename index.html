@@ -580,5 +580,10 @@ function showPage(name){
 
 applyLang();
 </script>
+  <script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/redhat/service-worker.js');
+}
+</script>
 </body>
 </html>
